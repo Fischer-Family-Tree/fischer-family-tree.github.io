@@ -1,0 +1,1553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fischer Family Tree</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400;0,500;0,700;0,800;1,400&family=Alegreya+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<meta name="robots" content="noindex,nofollow">
+<style>
+  :root{
+    --paper:#EEF1EA; --sheet:#FBFCF8; --ink:#1B2A33; --muted:#5E6B66; --line:#D3DACF;
+    --moss:#24533F; --moss-deep:#173A2C; --moss-soft:#DCE7DD;
+    --wine:#8A3550; --wine-soft:#F2E1E6;
+    --gold:#C99A2C; --gold-soft:#F6ECD0;
+    --accent:var(--moss); --accent-soft:var(--moss-soft); --rust:var(--wine); --rust-soft:var(--wine-soft); --bg:var(--paper); --card:var(--sheet);
+    --serif:"Alegreya",Georgia,serif; --sans:"Alegreya Sans",system-ui,sans-serif;
+    color-scheme:light;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.5 var(--sans)}
+  h1,h2,h3{font-family:var(--serif);font-weight:700;margin:0;letter-spacing:-.005em}
+  button{font:inherit;cursor:pointer;color:inherit}
+  input,select,textarea{font:inherit;color:inherit}
+  a{color:var(--moss)}
+  :focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+  .hidden{display:none!important}
+
+  /* ---- hero ---- */
+  .hero{background:var(--moss-deep);color:#F3F1E4;position:relative;overflow:hidden}
+  .hero-in{max-width:1180px;margin:0 auto;padding:34px 22px 26px;position:relative;z-index:1}
+  .hero h1{font-size:clamp(38px,6vw,64px);line-height:.98;font-weight:800;color:#FFF9E8;max-width:12ch}
+  .hero .books{margin-top:12px;font-family:var(--serif);font-style:italic;font-size:19px;color:#D9D3B8;max-width:46ch}
+  .hero .sub{margin-top:14px;font-size:15px;color:#B9C7BB}
+  .vine{position:absolute;right:-30px;top:-10px;height:calc(100% + 20px);width:auto;max-width:62%;opacity:.95;pointer-events:none}
+  @media (max-width:700px){ .vine{opacity:.28;right:-80px} }
+  .home-pill{display:inline-flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:16px;font-size:15px;color:#E9E4CC;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);padding:6px 14px;border-radius:999px}
+  .home-pill b{color:#FFE6A3}
+  .home-pill .linkbtn{color:#FFE6A3}
+  .linkbtn{background:none;border:0;padding:0;color:var(--moss);font:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+
+  /* ---- nav ---- */
+  .navbar{background:var(--moss-deep);border-top:1px solid rgba(255,255,255,.08);position:sticky;top:0;z-index:30}
+  nav{max-width:1180px;margin:0 auto;padding:0 14px;display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+  nav::-webkit-scrollbar{display:none}
+  nav button{flex:none;background:none;border:none;padding:13px 14px 11px;color:#C9D3C6;font-weight:500;font-size:16px;border-bottom:3px solid transparent}
+  nav button:hover{color:#fff}
+  nav button.on{color:#fff;border-bottom-color:var(--gold)}
+  nav button.add{margin-left:auto;color:#FFE6A3}
+  nav .badge{display:inline-block;min-width:22px;margin-left:6px;padding:0 7px;border-radius:999px;background:var(--gold);color:var(--moss-deep);font-size:13px;font-weight:700;line-height:20px;text-align:center}
+
+  .wrap{max-width:1180px;margin:0 auto;padding:22px 20px 70px}
+  .banner{background:var(--gold-soft);color:#6B4F0E;border-left:4px solid var(--gold);border-radius:6px;padding:10px 14px;margin-bottom:16px;font-size:15px}
+  .hint{font-size:15px;color:var(--muted);margin-top:8px}
+  .hint code{background:var(--moss-soft);padding:1px 6px;border-radius:5px;font-family:inherit}
+  .scanwarn{font-size:14px;color:var(--muted);margin:0 0 16px}
+
+  .grid{display:grid;grid-template-columns:minmax(270px,370px) 1fr;gap:22px;align-items:start}
+  @media (max-width:820px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--sheet);border:1px solid var(--line);border-radius:6px;padding:20px}
+  #tab-find .card:first-child{border-radius:6px;position:sticky;top:64px}
+  @media (max-width:820px){#tab-find .card:first-child{position:static}}
+
+  /* ---- search & list ---- */
+  .search{position:relative}
+  .search input,.field input,.field select,.field textarea,.ask input{width:100%;padding:11px 14px;border:1.5px solid var(--line);border-radius:6px;background:#fff;outline:none}
+  .search input{padding-left:42px;font-size:18px;border-color:#BFC9BC}
+  .search svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--moss)}
+  input:focus,select:focus,textarea:focus{border-color:var(--moss);box-shadow:0 0 0 3px var(--moss-soft)}
+  .count{font-size:14px;color:var(--muted);margin:12px 2px 6px}
+  .list{max-height:62vh;overflow:auto;margin:0 -8px}
+  .row{display:flex;justify-content:space-between;gap:10px;width:100%;text-align:left;background:none;border:none;border-radius:4px;padding:9px 10px;line-height:1.3}
+  .row:hover{background:var(--moss-soft)}
+  .row.sel{background:var(--moss);color:#fff}
+  .row.sel small{color:#D6E5DA}
+  .row small{color:var(--muted);white-space:nowrap;font-size:14px}
+  .row small.rt{color:var(--wine);white-space:normal}
+  .row.sel small.rt{color:#FFD9E2}
+  .letter{font-family:var(--serif);font-weight:800;color:var(--gold);font-size:22px;padding:12px 10px 0}
+  .dym{font-size:15px;color:var(--muted);padding:6px 10px}
+  .empty{color:var(--muted);text-align:center;padding:48px 16px}
+  .empty h3{color:var(--ink);font-size:26px;margin-bottom:6px}
+
+  /* ---- profile ---- */
+  .pname{font-family:var(--serif);font-weight:800;font-size:clamp(28px,3.6vw,40px);line-height:1.05}
+  .pmeta{color:var(--muted);margin-top:6px}
+  .torel{display:inline-block;margin-top:12px;background:var(--wine-soft);color:var(--wine);padding:4px 14px;border-radius:999px;font-weight:700}
+  .notes{margin-top:14px;white-space:pre-wrap;background:var(--paper);border-left:3px solid var(--line);padding:10px 14px;font-family:var(--serif);font-size:17px;line-height:1.6}
+  .notes summary{cursor:pointer;font-family:var(--sans);font-weight:700;color:var(--muted);font-size:14px}
+  .gen{margin-top:12px;font-size:15px;background:var(--moss-soft);border-radius:4px;padding:8px 12px;color:var(--moss-deep)}
+  .explain{margin-top:18px;border-top:1px solid var(--line);padding-top:14px;line-height:1.6}
+  .explain h4{margin:0 0 8px;font-family:var(--serif);font-size:20px}
+  .explain p{margin:0 0 10px}
+  .explain ul{margin:0 0 10px;padding-left:22px}
+  .explainbox{margin-top:12px;background:var(--wine-soft);border-radius:6px;padding:10px 14px}
+  .explainbox summary{cursor:pointer;font-weight:700;color:var(--wine)}
+  .explainbox .explain{border-top:none;padding-top:4px}
+
+  .actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:16px}
+  .btn{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;font-size:15px;font-weight:500}
+  .btn:hover{border-color:var(--moss);color:var(--moss)}
+  .btn.primary{background:var(--moss);border-color:var(--moss);color:#fff}
+  .btn.primary:hover{background:var(--moss-deep);color:#fff}
+  .btn.gold{background:var(--gold);border-color:var(--gold);color:var(--moss-deep);font-weight:700}
+  .btn.danger{color:var(--wine)}
+  .btn[disabled]{opacity:.4;cursor:default}
+
+  /* family: a small register, not cards */
+  .fam{margin-top:24px;display:grid;gap:16px}
+  .fam h4{margin:0 0 6px;font-family:var(--serif);font-size:19px;font-weight:700;color:var(--moss-deep)}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{display:inline-flex;flex-direction:column;align-items:flex-start;border:1.5px solid var(--line);background:#fff;border-radius:4px;padding:6px 12px;text-align:left;line-height:1.25}
+  .chip:hover{border-color:var(--moss)}
+  .chip small{color:var(--muted);font-size:14px}
+  .chip.x{flex-direction:row;align-items:center;gap:6px;border-radius:999px;padding:4px 6px 4px 12px}
+  .chip.x span.rm{border:none;background:var(--paper);border-radius:999px;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;color:var(--muted)}
+
+  /* ---- relationship ---- */
+  .ask{display:flex;gap:8px}
+  .ask input{font-size:18px}
+  .pickers{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:end;margin-top:18px}
+  .pickers .mid{padding-bottom:12px;color:var(--muted);font-family:var(--serif);font-style:italic}
+  @media (max-width:640px){.pickers{grid-template-columns:1fr}.pickers .mid{display:none}}
+  .answer{margin-top:22px}
+  .answer .big{font-family:var(--serif);font-size:clamp(24px,3vw,32px);line-height:1.25}
+  .answer .big b{color:var(--moss);font-weight:800}
+  .answer .rev{color:var(--muted);margin-top:6px;font-size:18px}
+  .answer .meta{margin-top:12px}
+
+  /* the thread: blood steps solid green, marriage steps dashed wine */
+  .path{margin:18px 0 0 8px;padding:0;list-style:none}
+  .path li{position:relative;padding:8px 0 8px 26px;border-left:3px solid var(--moss)}
+  .path li.m{border-left:3px dashed var(--wine)}
+  .path li:before{content:"";position:absolute;left:-9px;top:14px;width:15px;height:15px;border-radius:50%;background:var(--sheet);border:3px solid var(--moss)}
+  .path li.m:before{border-color:var(--wine);border-radius:3px;transform:rotate(45deg) scale(.9)}
+  .path li .how{color:var(--muted)}
+  .path li.m .how{color:var(--wine)}
+  .path li a{font-family:var(--serif);font-size:19px;text-decoration:none}
+  .pathkey{display:flex;gap:16px;margin-top:10px;font-size:14px;color:var(--muted)}
+  .pathkey i{display:inline-block;width:22px;height:0;border-top:3px solid var(--moss);vertical-align:middle;margin-right:6px}
+  .pathkey i.m{border-top:3px dashed var(--wine)}
+
+  /* ---- books ---- */
+  .bookbar{display:flex;gap:12px;flex-direction:column;align-items:stretch}
+  .bookbar input{flex:1;min-width:220px;padding:10px 14px;border:1.5px solid var(--line);border-radius:6px;background:#fff;outline:none}
+  .seg{display:inline-flex;border:1.5px solid var(--line);border-radius:999px;overflow:hidden;background:#fff;flex-wrap:wrap}
+  .seg button{border:none;background:none;padding:8px 15px;font-weight:500;color:var(--muted)}
+  .seg button.on{background:var(--moss);color:#fff}
+  .seg.big button{padding:10px 18px;font-size:17px;font-family:var(--serif);font-weight:700}
+  .bookpick,.viewpick{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .bookpick>span,.viewpick>span{font-size:15px;font-weight:700;color:var(--muted)}
+  #booktitle{font-family:var(--serif);font-weight:800;font-size:28px;margin:12px 0 2px}
+  .list.tall{max-height:70vh;margin-top:10px}
+  .brow{justify-content:flex-start;gap:12px}
+  .bnum{font-family:var(--serif);font-weight:700;color:var(--gold);min-width:56px}
+  .bmain small{white-space:normal}
+  .genhead{position:sticky;top:0;background:var(--sheet);z-index:2;font-family:var(--serif);font-weight:800;font-size:21px;padding:12px 10px 6px;border-bottom:2px solid var(--gold)}
+  .genhead small{font-family:var(--sans);font-weight:400;font-size:14px;color:var(--muted);margin-left:6px}
+  .chipsrow{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+  .chipsrow button{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:5px 13px;font-size:15px;color:var(--muted)}
+  .chipsrow button.on{background:var(--wine);border-color:var(--wine);color:#fff}
+  .gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:16px;margin-top:14px;max-height:72vh;overflow:auto;padding:4px}
+  .gcard{display:flex;flex-direction:column;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:4px;padding:8px;gap:4px}
+  .gcard:hover{border-color:var(--moss)}
+  .gcard img,.gthumb{width:100%;aspect-ratio:3/4;object-fit:cover;object-position:top;border-radius:2px;background:var(--paper)}
+  .gcat{font-size:13px;color:var(--wine);font-weight:700}
+  .gtitle{font-size:15px;font-weight:500;line-height:1.3}
+  .gpage{font-size:14px;color:var(--muted)}
+  .scanview{display:flex;gap:6px;margin:6px 0 10px}
+  .scanview .btn.on{background:var(--moss);color:#fff;border-color:var(--moss)}
+  .picsheet{max-width:980px}
+  .scannav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px}
+  .pichead{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+  .pagewrap{margin-top:12px;border:1px solid var(--line);overflow:hidden;background:#fff}
+  .pageimg{display:block;width:100%;aspect-ratio:844/1110;object-fit:cover}
+  .picfull{width:100%;margin-top:12px;border:1px solid var(--line)}
+
+  /* ---- obituaries ---- */
+  .inbox{background:var(--sheet);border:1px solid var(--line);border-top:6px solid var(--gold);border-radius:6px;padding:18px 20px;margin-bottom:20px}
+  .inbox h3{font-size:26px}
+  .inbox h3 small{display:block;font-family:var(--sans);font-weight:400;font-size:15px;color:var(--muted);margin-top:2px}
+  .inbox h4{font-family:var(--serif);font-size:20px}
+  .ibrow{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;border-bottom:1px solid var(--line);padding:12px 2px}
+  .ibrow:last-child{border-bottom:none}
+  .ibrow b{font-family:var(--serif);font-size:19px}
+  .ibbtns{display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end}
+  .ibtag{display:inline-block;margin-top:4px;background:var(--gold-soft);color:#6B4F0E;border-radius:999px;padding:2px 10px;font-size:14px;font-weight:700}
+  .approved{color:var(--moss);font-weight:700}
+  @media (max-width:560px){ .ibrow{flex-direction:column} .ibbtns{justify-content:flex-start} }
+  .obitbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
+  .obitsum{margin-top:18px;background:var(--paper);border-radius:6px;padding:12px 14px}
+  .obittab{width:100%;border-collapse:collapse;margin-top:12px;font-size:16px}
+  .obittab th{text-align:left;font-size:14px;color:var(--muted);padding:8px;border-bottom:2px solid var(--line)}
+  .obittab td{padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+  .obittab select{width:100%;padding:8px;border:1.5px solid var(--line);border-radius:6px;background:#fff}
+  @media (max-width:640px){ .obittab thead{display:none} .obittab td{display:block;border:none;padding:4px 0} .obittab tr{display:block;border-bottom:1px solid var(--line);padding:8px 0} }
+
+  /* ---- forms & modal ---- */
+  .field{display:block;margin-bottom:12px}
+  .field>span{display:block;font-size:15px;font-weight:700;margin-bottom:4px}
+  .pick{position:relative}
+  .dd{position:absolute;z-index:20;left:0;right:0;top:calc(100% + 4px);background:#fff;border:1.5px solid var(--line);border-radius:6px;box-shadow:0 14px 30px rgba(23,58,44,.14);max-height:280px;overflow:auto;padding:4px}
+  .opt{padding:8px 10px;border-radius:4px;cursor:pointer;display:flex;justify-content:space-between;gap:8px}
+  .opt:hover,.opt.hi{background:var(--moss-soft)}
+  .opt small{color:var(--muted)}
+  .opt.none{color:var(--muted);cursor:default}
+  .modal{position:fixed;inset:0;background:rgba(23,58,44,.45);display:flex;align-items:flex-start;justify-content:center;padding:40px 14px;overflow:auto;z-index:50}
+  .sheet{background:var(--sheet);border-radius:8px;border-top:6px solid var(--moss);max-width:640px;width:100%;padding:24px;box-shadow:0 24px 60px rgba(23,58,44,.3)}
+  .sheet h2{font-size:28px;margin-bottom:12px}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+  .three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 12px}
+  @media (max-width:560px){.two,.three{grid-template-columns:1fr}}
+  .relbox{border-top:1px solid var(--line);padding-top:14px;margin-top:6px}
+  .relbox .chips{margin-bottom:6px}
+  .foot{display:flex;justify-content:flex-end;gap:8px;margin-top:16px;flex-wrap:wrap}
+  textarea.code{font:13px/1.4 ui-monospace,Menlo,monospace;min-height:180px;width:100%;border:1.5px solid var(--line);border-radius:6px;padding:10px}
+  .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--moss-deep);color:#fff;padding:11px 20px;border-radius:999px;font-size:16px;z-index:90;opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;border:1px solid var(--gold)}
+  .toast.on{opacity:1;transform:translateX(-50%)}
+  @media (prefers-reduced-motion:reduce){ .toast{transition:none} }
+
+  /* who-are-you */
+  .whosheet{border-top-color:var(--gold)}
+  .whosheet p{margin:0 0 14px;color:var(--muted)}
+  .whoalt{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+  .whoalt input{width:100%;padding:10px 14px;border:1.5px solid var(--line);border-radius:6px}
+  .meline{font-size:14px;color:var(--muted);margin-top:24px;text-align:center}
+
+  /* password gate */
+  .gate{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--moss-deep);padding:20px}
+  .gatebox{background:var(--sheet);border-radius:8px;border-top:6px solid var(--gold);max-width:420px;width:100%;padding:28px}
+  .gatebox h1{font-size:34px;line-height:1.05}
+  .gatebox p{color:var(--muted)}
+  .gatebox input{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:6px;font-size:18px;margin:6px 0 12px}
+  .quick{margin:14px 0;background:var(--sheet);border:1.5px solid var(--gold);border-radius:6px;padding:16px 18px}
+  .quick h3{font-size:24px}
+  .qopt{display:flex;gap:12px;align-items:flex-start;padding:10px 8px;border-bottom:1px solid var(--line);cursor:pointer;border-radius:4px}
+  .qopt:hover{background:var(--moss-soft)}
+  .qopt input{margin-top:6px;accent-color:var(--moss);width:18px;height:18px}
+  .qopt b{font-family:var(--serif);font-size:19px}
+  .qopt small{color:var(--muted);font-size:14px}
+  .qopt small.warn{color:var(--wine);font-weight:700}
+  .obitcard{margin-top:14px;border:1.5px solid var(--gold);border-radius:6px;padding:12px 16px;background:#fff}
+  .obitcard summary{cursor:pointer;font-family:var(--serif);font-weight:700;font-size:20px;color:var(--moss-deep)}
+  .obitmeta{font-size:14px;color:var(--muted);margin-top:4px}
+  .obittext{margin-top:10px;white-space:pre-wrap;font-family:var(--serif);font-size:17px;line-height:1.6;max-height:420px;overflow:auto}
+
+  .qphoto{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:4px}
+  .qphoto img{width:84px;height:104px;object-fit:cover;border-radius:4px;border:1.5px solid var(--line)}
+  .qphoto label.btn{cursor:pointer}
+  .obitbody{display:flex;gap:16px;align-items:flex-start;margin-top:10px}
+  .obitbody .obittext{margin-top:0;flex:1}
+  .obitphoto{width:150px;max-width:38%;border-radius:4px;border:1.5px solid var(--line);flex:none}
+  @media (max-width:520px){ .obitbody{flex-direction:column} .obitphoto{width:60%;max-width:220px} }
+  .portrait{float:right;width:112px;height:140px;object-fit:cover;object-position:top;border-radius:4px;border:3px solid #fff;box-shadow:0 0 0 1.5px var(--gold);margin:0 0 10px 14px}
+  .ibthumb{width:46px;height:58px;object-fit:cover;border-radius:3px;float:left;margin-right:10px;border:1px solid var(--line)}
+</style>
+</head>
+<body>
+<header class="hero">
+  <svg class="vine" viewBox="0 0 460 300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <g id="tulip">
+      <path d="M0,0 C-16,-8 -20,-34 -11,-50 C-6,-38 -3,-32 0,-30 C3,-32 6,-38 11,-50 C20,-34 16,-8 0,0 Z" fill="#8A3550" stroke="#E7C76A" stroke-width="2"/>
+      <path d="M0,-6 C-7,-20 -6,-40 0,-56 C6,-40 7,-20 0,-6 Z" fill="#C99A2C" stroke="#E7C76A" stroke-width="2"/>
+      <path d="M-5,-22 L5,-22 M-4,-30 L4,-30" stroke="#173A2C" stroke-width="1.5"/>
+    </g>
+    <g id="leaf"><path d="M0,0 C10,-6 26,-6 36,0 C26,6 10,6 0,0 Z" fill="#3E7A5A" stroke="#E7C76A" stroke-width="1.5"/><path d="M2,0 L32,0" stroke="#E7C76A" stroke-width="1"/></g>
+    <g id="heart"><path d="M0,10 C-14,0 -14,-12 -6,-12 C-2,-12 0,-8 0,-6 C0,-8 2,-12 6,-12 C14,-12 14,0 0,10 Z" fill="#C99A2C" stroke="#E7C76A" stroke-width="1.5"/></g>
+  </defs>
+  <g fill="none" stroke="#E7C76A" stroke-width="3" stroke-linecap="round">
+    <path d="M420,310 C400,240 330,230 300,190 C270,150 300,110 270,70"/>
+    <path d="M300,190 C250,200 210,170 190,130"/>
+    <path d="M330,228 C360,200 380,160 372,118"/>
+    <path d="M285,140 C255,130 238,110 232,88" stroke-width="2"/>
+  </g>
+  <use href="#tulip" transform="translate(270,72)"/>
+  <use href="#tulip" transform="translate(190,132) rotate(-28) scale(.9)"/>
+  <use href="#tulip" transform="translate(372,120) rotate(14) scale(.95)"/>
+  <use href="#leaf" transform="translate(300,190) rotate(-150)"/>
+  <use href="#leaf" transform="translate(292,160) rotate(-20) scale(.8)"/>
+  <use href="#leaf" transform="translate(340,222) rotate(-60) scale(.9)"/>
+  <use href="#leaf" transform="translate(240,180) rotate(160) scale(.75)"/>
+  <use href="#leaf" transform="translate(286,112) rotate(-190) scale(.7)"/>
+  <use href="#heart" transform="translate(232,86) scale(.9)"/>
+  <g fill="#E7C76A"><circle cx="214" cy="104" r="3"/><circle cx="350" cy="96" r="3"/><circle cx="404" cy="170" r="3"/><circle cx="160" cy="160" r="2.5"/><circle cx="246" cy="232" r="2.5"/></g>
+</svg>
+
+  <div class="hero-in">
+    <h1>Fischer Family Tree</h1>
+    <div class="books">The Nölting and Ehlers families, from Hanover to Missouri, as recorded in the two family books</div>
+    <div class="sub" id="sub">Loading…</div>
+    <div class="home-pill" id="homePill"></div>
+  </div>
+</header>
+<div class="navbar"><nav aria-label="Sections">
+    <button data-tab="find" class="on">Find someone</button>
+    <button data-tab="relate">How are they related?</button>
+    <button data-tab="books">Browse the books</button>
+    <button data-tab="obit">Obituaries</button>
+    <button data-tab="backup">Changes</button>
+    <button class="add" data-act="new">＋ Add person</button>
+</nav></div>
+<div class="wrap">
+  <div id="banner" class="banner hidden"></div>
+  <p class="scanwarn">Built from scans of the Nölting and Ehlers family books. Scanning can misread names and dates, especially in the oldest generations. Each person’s page links to the original book page, and anyone can use <b>Edit</b> to fix a mistake.</p>
+
+  <section id="tab-find" class="grid">
+    <div class="card">
+      <div class="search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="q" type="search" placeholder="Search by name, nickname, place, year…" autocomplete="off">
+      </div>
+      <div class="count" id="count"></div>
+      <div class="list" id="results"></div>
+    </div>
+    <div class="card" id="profile"></div>
+  </section>
+
+  <section id="tab-relate" class="hidden">
+    <div class="card">
+      <h2 style="font-size:22px">How are they related?</h2>
+      <div class="hint" style="margin-bottom:12px">Type a question, or pick two people below.</div>
+      <form class="ask" id="askForm">
+        <input id="ask" placeholder="e.g. How is Kate related to Allison?" autocomplete="off">
+        <button class="btn primary" type="submit">Ask</button>
+      </form>
+      <div class="hint">Try <code>Kate and Allison</code> or <code>How is Uncle Joe related to me?</code> (“me” works after you choose yourself as the home person).</div>
+      <div class="pickers">
+        <label class="field" style="margin:0"><span>Person</span><div class="pick"><input id="relB" placeholder="Search for a person…" autocomplete="off"></div></label>
+        <div class="mid">is related to</div>
+        <label class="field" style="margin:0"><span>…how, to this person?</span><div class="pick"><input id="relA" placeholder="Search for a person…" autocomplete="off"></div></label>
+      </div>
+      <div id="answer"></div>
+    </div>
+  </section>
+
+  <section id="tab-books" class="hidden">
+    <div class="card">
+      <div class="bookbar">
+        <div class="bookpick"><span>Book:</span><div class="seg big"><button data-book="Nölting" class="on">📕 Nölting Descendants</button><button data-book="Ehlers">📗 Anton Ehlers Descendants</button></div></div>
+        <div class="viewpick"><span>Show:</span>
+        <div class="seg"><button data-view="entries" class="on">Entries</button><button data-view="pics">Pictures &amp; maps</button><button data-view="scans">Scanned pages</button></div></div>
+        <input id="bookq" type="search" placeholder="Filter this book… (name, place, year, or #number)" autocomplete="off">
+      </div>
+      <div class="chipsrow hidden" id="catrow"><button data-cat="" class="on">All</button><button data-cat="Photos">Photos</button><button data-cat="Maps">Maps</button><button data-cat="Documents &amp; clippings">Documents &amp; clippings</button></div>
+      <div id="booktitle"></div>
+      <div class="hint" id="bookinfo"></div>
+      <div class="list tall" id="booklist"></div>
+      <div class="gallery hidden" id="gallery"></div>
+      <div class="scanview hidden" id="scanview"><button class="btn" data-sv="grid">Thumbnails</button><button class="btn" data-sv="list">List</button></div>
+      <div class="gallery hidden" id="scanlist"></div>
+    </div>
+  </section>
+
+  <section id="tab-obit" class="hidden">
+    <div class="card">
+      <div id="inboxBox" class="inbox hidden"></div>
+      <div id="obitReview"></div>
+      <h2 style="font-size:26px">Approve an obituary yourself</h2>
+      <p class="hint">Found one the daily check missed? Paste it here and tap <b>Find in tree</b>. Pick the right person, check the date, and approve it. New relatives it mentions (a new great-grandchild, say) are added the next morning, or you can add them now with <b>＋ Add person</b>.</p>
+      <label class="field" style="margin-top:12px"><span>Name of the person who died <small style="font-weight:400;color:var(--muted)">(optional, if it isn’t at the start of the obituary)</small></span><input id="obitName" autocomplete="off"></label>
+      <textarea id="obitText" class="code" style="min-height:180px;font:16px/1.5 var(--sans)" placeholder="Paste the obituary text here…"></textarea>
+      <div id="quickBox"></div>
+      <div class="obitbar"><span style="flex:1"></span><button class="btn primary" data-act="readobit">Find in tree</button></div>
+      <div id="obitStatus" class="hint"></div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <h3>Approved obituaries</h3>
+      <div id="obitHistory" class="hint">None yet.</div>
+    </div>
+  </section>
+
+  <section id="tab-backup" class="hidden">
+    <div class="card" style="margin-bottom:14px">
+      <h3>Recent changes</h3>
+      <p class="hint">Every addition or fix anyone in the family makes is listed here with the name of who made it. Any change can be undone.</p>
+      <div class="list" id="histList"></div>
+    </div>
+    <div class="grid" style="grid-template-columns:1fr 1fr">
+      <div class="card">
+        <h3>Export</h3>
+        <p class="hint">A copy of the people you’ve added or changed (the book records are built in), as text you can save anywhere.</p>
+        <textarea class="code" id="exportBox" readonly></textarea>
+        <div class="foot"><button class="btn primary" data-act="copy">Copy</button></div>
+      </div>
+      <div class="card">
+        <h3>Import</h3>
+        <p class="hint">Paste a backup copied from this page. People with matching IDs are updated; new ones are added.</p>
+        <textarea class="code" id="importBox" placeholder="Paste backup here…"></textarea>
+        <div class="foot"><button class="btn primary" data-act="import">Import</button></div>
+      </div>
+    </div>
+  </section>
+  <p class="meline" id="meline"></p>
+</div>
+
+<div class="modal hidden" id="modal"></div>
+<div class="modal hidden" id="who" style="z-index:80"></div>
+<div class="toast" id="toast"></div>
+
+
+<script>window.FT_CONFIG={"backend": "", "encrypted": true, "preview": false, "salt": "BEtaCalBv4isK0X91NlGwA=="};window.FT_SAMPLE_INBOX=[];</script>
+<script>
+/* ---------- state & helpers ---------- */
+const S = { base:new Map(), edits:new Map(), people:new Map(), kids:new Map(), sp:new Map(), cache:new Map(), firstCount:new Map(), relCache:new Map(), anc:new Map(), comp:null, shown:300, selected:null, tab:'find', home:null, col:null, loaded:false, local:false, readOnly:false };
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const norm = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().trim();
+const P = id => S.people.get(id);
+const newId = () => 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+const yr = s => (String(s || '').match(/\d{4}/) || [''])[0];
+/* ---------- site config & storage (no Claude account needed) ---------- */
+const CONFIG = window.FT_CONFIG || { backend:'', encrypted:false, preview:true };
+const enc = new TextEncoder();
+function b64(buf){ return btoa(String.fromCharCode(...new Uint8Array(buf))); }
+async function sha256hex(s){ const h=await crypto.subtle.digest('SHA-256', enc.encode(s)); return [...new Uint8Array(h)].map(b=>b.toString(16).padStart(2,'0')).join(''); }
+let FAMKEY=null, AESKEY=null;
+function getPass(){ try{ return localStorage.getItem('ft-pass')||''; }catch(_){ return ''; } }
+const normPass=p=>String(p||'').toLowerCase().replace(/[^a-z0-9]/g,'');
+async function deriveAES(pass){
+  pass=normPass(pass);
+  if(AESKEY && AESKEY.pass===pass) return AESKEY.key;
+  const salt=Uint8Array.from(atob(CONFIG.salt||''),c=>c.charCodeAt(0));
+  const base=await crypto.subtle.importKey('raw', enc.encode(pass), 'PBKDF2', false, ['deriveKey']);
+  const key=await crypto.subtle.deriveKey({name:'PBKDF2', salt, iterations:600000, hash:'SHA-256'}, base, {name:'AES-GCM', length:256}, false, ['decrypt']);
+  AESKEY={pass,key}; return key;
+}
+async function decryptRaw(buf, pass){ const u=new Uint8Array(buf); const key=await deriveAES(pass||getPass()); return crypto.subtle.decrypt({name:'AES-GCM', iv:u.slice(0,12)}, key, u.slice(12)); }
+async function decryptBuf(buf, pass){ return JSON.parse(new TextDecoder().decode(await decryptRaw(buf, pass))); }
+async function loadJSON(name){
+  if(!CONFIG.encrypted){ const r=await fetch(name); return r.json(); }
+  const r=await fetch(name+'.enc'); return decryptBuf(await r.arrayBuffer());
+}
+// Book page scans are locked too: each one is unlocked when it scrolls into view.
+const IMGCACHE=new Map();
+async function unlockImg(el){ const s=el.dataset.esrc; el.removeAttribute('data-esrc'); try{ let u=IMGCACHE.get(s);
+  if(!u){ const r=await fetch(s+'.enc'); u=URL.createObjectURL(new Blob([await decryptRaw(await r.arrayBuffer())],{type:'image/jpeg'})); IMGCACHE.set(s,u); } el.src=u; }catch(_){} }
+if(CONFIG.encrypted){
+  const io=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ io.unobserve(e.target); unlockImg(e.target); } }),{rootMargin:'400px'});
+  new MutationObserver(()=>document.querySelectorAll('img[data-esrc]:not([data-obs])').forEach(i=>{ i.dataset.obs='1'; io.observe(i); })).observe(document.documentElement,{childList:true,subtree:true});
+}
+// Family password: asked once per device, then remembered.
+async function passwordGate(){
+  if(!CONFIG.encrypted) return;
+  const probe=await (await fetch('check.enc')).arrayBuffer();
+  const tryPass=async p=>{ try{ await decryptRaw(probe.slice(0), p); return true; }catch(_){ return false; } };
+  let p=getPass(); if(p && await tryPass(p)){ FAMKEY=await sha256hex('fischer:'+normPass(p)); return; }
+  document.body.insertAdjacentHTML('afterbegin', `<div class="gate" id="gate"><form class="gatebox" id="gateForm"><h1>Fischer Family Tree</h1><p>Enter the family password. You only need to do this once on each phone or computer.</p><input id="gatePass" type="password" autocomplete="current-password" placeholder="Family password" required><button class="btn primary" style="width:100%;padding:11px">Open the tree</button><p id="gateMsg" style="color:var(--wine);min-height:1.5em"></p></form></div>`);
+  document.querySelector('.hero').classList.add('hidden'); document.querySelector('.navbar').classList.add('hidden'); document.querySelector('.wrap').classList.add('hidden');
+  await new Promise(res=>{ $('#gateForm').addEventListener('submit', async e=>{ e.preventDefault(); const v=$('#gatePass').value; $('#gateMsg').textContent='Checking…';
+    if(await tryPass(v)){ try{ localStorage.setItem('ft-pass', v); }catch(_){} FAMKEY=await sha256hex('fischer:'+normPass(v)); res(); }
+    else $('#gateMsg').textContent='That password isn’t right. Ask Chris for the family password.'; }); });
+  $('#gate').remove(); document.querySelector('.hero').classList.remove('hidden'); document.querySelector('.navbar').classList.remove('hidden'); document.querySelector('.wrap').classList.remove('hidden');
+}
+
+// A small database that works the same in the preview (saved on this device) and on the
+// live site (saved to the family's Google Sheet through a web-app address).
+function makeDB(cfg){
+  const COLS=['edits','inbox','obits','history'];
+  const data=Object.fromEntries(COLS.map(c=>[c,{}]));
+  const subs=Object.fromEntries(COLS.map(c=>[c,[]]));
+  const remote=!!cfg.backend;
+  const LS='ft-preview-db';
+  if(!remote){ try{ const s=JSON.parse(localStorage.getItem(LS)||'null'); if(s) for(const c of COLS) data[c]=s[c]||{}; }catch(_){}
+    if(!Object.keys(data.inbox).length && window.FT_SAMPLE_INBOX) for(const it of window.FT_SAMPLE_INBOX) data.inbox[it.id]=it; }
+  const persist=()=>{ if(!remote) try{ localStorage.setItem(LS, JSON.stringify(data)); }catch(_){} };
+  const snap=(c,order)=>{ let e=Object.entries(data[c]); if(order) e.sort((a,b)=>(order.dir==='desc'?-1:1)*((a[1][order.f]||0)-(b[1][order.f]||0)));
+    if(order&&order.n) e=e.slice(0,order.n); return {docs:e.map(([id,v])=>({id, data:()=>v})), metadata:{fromCache:false}}; };
+  const emit=c=>{ for(const s of subs[c]) try{ s.cb(snap(c,s.order)); }catch(_){} };
+  async function send(c,id,op,body){
+    if(!remote){ persist(); return; }
+    const r=await fetch(cfg.backend, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({k:FAMKEY, col:c, id, op, data:body})});
+    const j=await r.json().catch(()=>({})); if(!r.ok||!j.ok){ const e=new Error(j.error||'save failed'); throw e; }
+  }
+  async function pull(){
+    const r=await fetch(cfg.backend+'?k='+encodeURIComponent(FAMKEY||'')); const j=await r.json();
+    if(!j.ok) throw new Error(j.error||'load failed');
+    for(const c of COLS){ const before=JSON.stringify(data[c]); data[c]=j[c]||{}; if(JSON.stringify(data[c])!==before) emit(c); }
+  }
+  const docRef=(c,id)=>({
+    async set(o){ const prev=data[c][id]; data[c][id]=JSON.parse(JSON.stringify(o)); emit(c); try{ await send(c,id,'set',data[c][id]); }catch(e){ if(prev===undefined) delete data[c][id]; else data[c][id]=prev; emit(c); throw e; } },
+    async update(o){ const prev=data[c][id]; data[c][id]={...(prev||{}), ...JSON.parse(JSON.stringify(o))}; emit(c); try{ await send(c,id,'update',o); }catch(e){ if(prev===undefined) delete data[c][id]; else data[c][id]=prev; emit(c); throw e; } },
+    async delete(){ const prev=data[c][id]; delete data[c][id]; emit(c); try{ await send(c,id,'delete',null); }catch(e){ if(prev!==undefined) data[c][id]=prev; emit(c); throw e; } },
+  });
+  const colRef=(c,order)=>({
+    doc:id=>docRef(c,id),
+    orderBy:(f,dir)=>colRef(c,{...(order||{}),f,dir}),
+    limit:n=>colRef(c,{...(order||{}),n}),
+    onSnapshot(cb,err){ const s={cb,order}; subs[c].push(s); if(!remote||loaded) cb(snap(c,order)); else waiting.push(()=>cb(snap(c,order))); if(err) errs.push(err); return ()=>{ subs[c]=subs[c].filter(x=>x!==s); }; },
+  });
+  let loaded=false; const waiting=[], errs=[];
+  if(remote){
+    const first=()=>pull().then(()=>{ if(!loaded){ loaded=true; waiting.splice(0).forEach(f=>f()); } }).catch(e=>{ if(!loaded) errs.forEach(f=>f(e)); });
+    first(); setInterval(()=>{ if(document.visibilityState==='visible') pull().catch(()=>{}); }, 45000);
+    document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible') pull().catch(()=>{}); });
+  }
+  async function uploadPhoto(dataUrl){ if(!remote) return dataUrl;
+    const r=await fetch(cfg.backend,{method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({k:FAMKEY, op:'photo', data:dataUrl})});
+    const j=await r.json().catch(()=>({})); if(!j.ok) throw new Error(j.error||'photo failed'); return j.url; }
+  return { collection:c=>colRef(c), doc:path=>{ const [c,id]=path.split('/'); return docRef(c,id); }, remote, uploadPhoto };
+}
+
+/* ---------- who's approving (asked once per device, only when someone first approves or edits) ---------- */
+try{ const m=JSON.parse(localStorage.getItem('ft-me')||'null'); if(m&&m.name){ S.me=m.name; S.meId=m.id||''; } }catch(_){}
+function setMe(name,id){ S.me=name; S.meId=id||''; try{ localStorage.setItem('ft-me', JSON.stringify({name, id:id||''})); }catch(_){} renderMeLine(); }
+function renderMeLine(){ const el=$('#meline'); if(!el) return; el.innerHTML = S.me ? `Approvals and changes from this device are signed <b>${esc(S.me)}</b>. <button class="linkbtn" data-me="change">Not you?</button>` : ''; }
+function ensureMe(){
+  if(S.me) return Promise.resolve(true);
+  return new Promise(res=>{
+    const m=$('#who');
+    m.innerHTML=`<div class="sheet whosheet" role="dialog" aria-labelledby="whoH"><h2 id="whoH">Who’s approving?</h2>
+      <p>Pick yourself once. Your name is then added automatically to everything you approve or change from this phone or computer.</p>
+      <label class="field"><span>Find yourself in the tree</span><div class="pick"><input id="whoIn" placeholder="Start typing your name…" autocomplete="off"></div></label>
+      <div class="whoalt"><label class="field" style="margin:0"><span>Not in the tree yet? Type your name instead</span><input id="whoTxt" placeholder="First and last name" autocomplete="name"></label></div>
+      <div class="foot"><button class="btn" data-who="cancel">Cancel</button><button class="btn primary" data-who="ok">Continue</button></div></div>`;
+    m.classList.remove('hidden');
+    let picked=null;
+    makePicker($('#whoIn'),{onPick:id=>{ picked=id; setRel($('#whoIn'),id); }});
+    setTimeout(()=>$('#whoIn').focus(),30);
+    const done=ok=>{ m.classList.add('hidden'); m.innerHTML=''; m.onclick=null; res(ok); };
+    m.onclick=e=>{ const b=e.target.closest('[data-who]'); if(!b) return;
+      if(b.dataset.who==='cancel') return done(false);
+      const typed=$('#whoTxt').value.trim(), pid=picked||$('#whoIn').dataset.id;
+      if(pid&&P(pid)){ setMe(fullName(P(pid)), pid); return done(true); }
+      if(typed.length>1){ setMe(typed,''); return done(true); }
+      toast('Pick your name, or type it in the box below.'); };
+  });
+}
+document.addEventListener('click',e=>{ const b=e.target.closest('[data-me]'); if(!b) return; S.me=null; S.meId=''; try{ localStorage.removeItem('ft-me'); }catch(_){} renderMeLine(); ensureMe(); });
+
+function fullName(p){ if(!p) return 'Unknown'; return [p.first,p.middle,p.last,p.suffix].filter(Boolean).join(' ') || '(name not given in the book)'; }
+function shortName(p){ if(!p) return 'Unknown'; if(!p.first) return fullName(p);
+  return (S.firstCount.get(norm(p.first))||0)>1 && p.last ? p.first+' '+p.last : p.first; }
+function marriedNames(p){ if(p.gender==='M') return []; const own=norm(p.last);
+  return [...new Set(spousesOf(p.id).map(s=>P(s).last).filter(l=>l && norm(l)!==own))]; }
+function life(p){ const b=yr(p.born), d=yr(p.died);
+  if(p.died) return `${b||'?'}–${d||'?'}`; if(b) return `b. ${b}`; return ''; }
+function poss(n){ return n + '’s'; }
+function g3(g,m,f,n){ return g==='M'?m:g==='F'?f:n; }
+let toastT; function toast(m){ const t=$('#toast'); t.textContent=m; t.classList.add('on'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('on'),2600); }
+try{ const v=localStorage.getItem('ft-home2'); S.home = v && v!=='none' ? v : null; }catch(e){}
+
+/* ---------- indexes ---------- */
+function rebuild(){
+  S.people = new Map(S.base);
+  for(const [id,e] of S.edits){ if(e.deleted) S.people.delete(id); else S.people.set(id,{...e,id}); }
+  S.kids = new Map(); S.sp = new Map(); S.cache = new Map(); S.firstCount = new Map(); S.relCache = new Map(); S.anc = new Map(); S.comp = null;
+  for(const p of S.people.values()){ S.kids.set(p.id,[]); S.sp.set(p.id,new Set()); }
+  for(const p of S.people.values()){
+    for(const par of (p.parents||[])) if(S.kids.has(par)) S.kids.get(par).push(p.id);
+    for(const s of (p.spouses||[])) if(S.people.has(s)){ S.sp.get(p.id).add(s); S.sp.get(s).add(p.id); }
+  }
+  for(const p of S.people.values()){ const f=norm(p.first); S.firstCount.set(f,(S.firstCount.get(f)||0)+1); }
+  NAMESET=null; for(const i of (S.inbox||[])) delete i._score;
+  S.scanIdx=new Map();
+  for(const p of S.people.values()) for(const [t,pg] of (p.scans||[])){ const k=t+String(pg).padStart(3,'0'); if(!S.scanIdx.has(k)) S.scanIdx.set(k,[]); S.scanIdx.get(k).push(p.id); }
+  S.scanKeys=[]; for(const [t,n] of Object.entries(TOTALPAGES)) for(let i=1;i<=n;i++) S.scanKeys.push(t+String(i).padStart(3,'0'));
+  if(S.selected && !S.people.has(S.selected)) S.selected=null;
+  if(S.home && !S.people.has(S.home)) S.home=null;
+}
+const parentsOf = id => (P(id)?.parents||[]).filter(x=>S.people.has(x));
+const childrenOf = id => S.kids.get(id) || [];
+const spousesOf = id => [...(S.sp.get(id) || [])];
+function siblingsOf(id){
+  const mine=parentsOf(id), out=new Map();
+  for(const par of mine) for(const c of childrenOf(par)) if(c!==id && !out.has(c)){
+    const theirs=parentsOf(c), shared=mine.filter(x=>theirs.includes(x)).length;
+    out.set(c, mine.length>=2 && theirs.length>=2 && shared===1 ? 'half' : 'full');
+  }
+  return out;
+}
+const TOTALPAGES={n:319,e:287};
+// Picture and map pages live only under Pictures & maps, not in Scanned pages.
+const PICPAGES=new Set(["e007", "e008", "e022", "e023", "e028", "e029", "e032", "e033", "e040", "e041", "e046", "e047", "e050", "e051", "e054", "e055", "e058", "e059", "e072", "e073", "e224", "e232", "e233", "e234", "n007", "n023", "n025", "n027", "n030", "n035", "n040", "n053", "n060", "n064", "n067", "n071", "n074", "n075", "n077", "n078", "n079", "n081", "n084", "n088", "n095", "n096", "n099", "n101", "n107", "n108", "n109", "n110", "n111", "n112", "n113", "n114", "n115", "n116", "n120", "n121", "n123", "n125", "n143", "n147", "n151", "n164", "n211"]);
+const textPages=t=>S.scanKeys.filter(k=>k[0]===t && !PICPAGES.has(k));
+const sortKey = p => (p.last ? norm(p.last) : (p.first ? '~' : '~~'))+' '+norm(p.first);
+const byName = (a,b) => sortKey(a).localeCompare(sortKey(b));
+
+/* ---------- search ---------- */
+function cached(p){ let c=S.cache.get(p.id); if(c) return c;
+  const mn=marriedNames(p);
+  c={ w:norm([p.first,p.middle,p.last,p.maiden,p.nickname].join(' ')).split(/\s+/).filter(Boolean),
+      m:norm(mn.join(' ')).split(/\s+/).filter(Boolean),
+      h:norm([p.first,p.middle,p.last,p.maiden,p.nickname,mn.join(' '),p.born,p.died,p.birthplace,p.notes].join(' ')) };
+  S.cache.set(p.id,c); return c; }
+const nameWords = p => cached(p).w;
+function lev(a,b){ const m=a.length,n=b.length; if(Math.abs(m-n)>2) return 9; let prev=[...Array(n+1).keys()];
+  for(let i=1;i<=m;i++){ const cur=[i]; for(let j=1;j<=n;j++) cur[j]=Math.min(prev[j]+1,cur[j-1]+1,prev[j-1]+(a[i-1]===b[j-1]?0:1)); prev=cur; } return prev[n]; }
+function search(q, opts={}){
+  const ts=norm(q).split(/\s+/).filter(Boolean), all=[...S.people.values()];
+  if(!ts.length) return {list:all.sort(byName), fuzzy:false};
+  const res=[];
+  for(const p of all){
+    const c=cached(p), w=c.w, h=c.h; let score=0, ok=true;
+    for(const t of ts){
+      if(w.includes(t)) score+=4; else if(w.some(x=>x.startsWith(t))) score+=3; else if(c.m.some(x=>x.startsWith(t))) score+=2.5; else if(h.includes(t)) score+=1; else { ok=false; break; }
+    }
+    if(ok) res.push([score,p]);
+  }
+  if(res.length || opts.noFuzzy) return {list:res.sort((a,b)=>b[0]-a[0]||byName(a[1],b[1])).map(x=>x[1]), fuzzy:false};
+  // typo-tolerant fallback
+  for(const p of all){
+    const w=nameWords(p); let score=0, ok=true;
+    for(const t of ts){ const d=Math.min(...w.map(x=>lev(t,x)), 9); if(d<=(t.length>5?2:1)) score+=3-d; else { ok=false; break; } }
+    if(ok) res.push([score,p]);
+  }
+  return {list:res.sort((a,b)=>b[0]-a[0]).map(x=>x[1]), fuzzy:true};
+}
+
+/* ---------- relationship engine ---------- */
+function ancestors(id){
+  if(S.anc.has(id)) return S.anc.get(id);
+  const r=ancestors0(id); S.anc.set(id,r); return r;
+}
+function ancestors0(id){
+  const m=new Map([[id,{d:0,from:null}]]), q=[id];
+  while(q.length){ const x=q.shift(), d=m.get(x).d; for(const p of parentsOf(x)) if(!m.has(p)){ m.set(p,{d:d+1,from:x}); q.push(p); } }
+  return m;
+}
+function blood(aId,bId){
+  const A=ancestors(aId), B=ancestors(bId); let best=null;
+  for(const [c,ia] of A){ const ib=B.get(c); if(!ib) continue; const s=ia.d+ib.d;
+    if(!best || s<best.s) best={c,a:ia.d,b:ib.d,s}; }
+  if(!best) return null;
+  const commons=[]; for(const [c,ia] of A){ const ib=B.get(c); if(ib && ia.d===best.a && ib.d===best.b) commons.push(c); }
+  const up=[]; for(let t=best.c; t!==null; t=A.get(t).from) up.push(t); up.reverse();
+  const down=[]; for(let t=best.c; t!==null; t=B.get(t).from) down.push(t);
+  return {...best, commons, path:up.concat(down.slice(1))};
+}
+function greats(n){ return n<=0?'':n===1?'great-':n===2?'great-great-':`${n}× great-`; }
+const ORD=['','first','second','third','fourth','fifth','sixth','seventh','eighth','ninth','tenth'];
+function times(n){ return n===1?'once':n===2?'twice':n===3?'three times':n+' times'; }
+function bloodTerm(a,b,g,half){
+  if(a===0 && b===0) return 'the same person';
+  if(a===0) return b===1 ? g3(g,'son','daughter','child') : greats(b-2)+g3(g,'grandson','granddaughter','grandchild');
+  if(b===0) return a===1 ? g3(g,'father','mother','parent') : greats(a-2)+g3(g,'grandfather','grandmother','grandparent');
+  if(a===1 && b===1) return (half?'half-':'')+g3(g,'brother','sister','sibling');
+  if(a===1){ const base=g3(g,'nephew','niece','niece/nephew'); return b===2 ? base : greats(b-3)+'grand'+base; }
+  if(b===1){ const base=g3(g,'uncle','aunt','aunt/uncle'); return greats(a-2)+base; }
+  const deg=Math.min(a,b)-1, rem=Math.abs(a-b);
+  return `${ORD[deg]||deg+'th'} cousin` + (rem ? ` ${times(rem)} removed` : '');
+}
+function inLawViaRelative(r,g,Sp){ // B is married to S, S is A's blood relative (r = S relative to A)
+  const {a,b}=r;
+  if(a===1&&b===1) return g3(g,'brother-in-law','sister-in-law','sibling-in-law');
+  if(a===0&&b===1) return g3(g,'son-in-law','daughter-in-law','child-in-law');
+  if(a===0) return greats(b-2)+g3(g,'grandson-in-law','granddaughter-in-law','grandchild-in-law');
+  if(b===0&&a===1) return g3(g,'stepfather','stepmother','stepparent');
+  if(b===0) return greats(a-2)+g3(g,'step-grandfather','step-grandmother','step-grandparent');
+  if(b===1) return greats(a-2)+g3(g,'uncle','aunt','aunt/uncle')+' by marriage';
+  return `${bloodTerm(a,b,Sp.gender)}’s ${g3(g,'husband','wife','spouse')}`;
+}
+function inLawViaSpouse(r,g,Sp){ // B is a blood relative of A's spouse S (r = B relative to S)
+  const sw=g3(Sp.gender,'husband','wife','spouse');
+  if(r.b===0&&r.a===1) return g3(g,'father-in-law','mother-in-law','parent-in-law');
+  if(r.b===0) return greats(r.a-2)+g3(g,'grandfather-in-law','grandmother-in-law','grandparent-in-law');
+  if(r.a===1&&r.b===1) return g3(g,'brother-in-law','sister-in-law','sibling-in-law');
+  if(r.a===0&&r.b===1) return g3(g,'stepson','stepdaughter','stepchild');
+  if(r.a===0) return greats(r.b-2)+g3(g,'step-grandson','step-granddaughter','step-grandchild');
+  return `${sw}’s ${bloodTerm(r.a,r.b,g)}`;
+}
+function graphPath(a,b){
+  const prev=new Map([[a,null]]), q=[a];
+  while(q.length){ const x=q.shift(); if(x===b) break;
+    for(const y of [...parentsOf(x),...childrenOf(x),...spousesOf(x)]) if(!prev.has(y)){ prev.set(y,x); q.push(y); } }
+  if(!prev.has(b)) return null;
+  const path=[]; for(let t=b; t!==null; t=prev.get(t)) path.push(t); return path.reverse();
+}
+// Describe B relative to A ("B is A's ___")
+function component(id){
+  if(S.comp && S.comp.root===id) return S.comp.set;
+  const set=new Set([id]), q=[id];
+  while(q.length){ const x=q.shift(); for(const y of [...parentsOf(x),...childrenOf(x),...spousesOf(x)]) if(!set.has(y)){ set.add(y); q.push(y); } }
+  S.comp={root:id,set}; return set;
+}
+function relate(aId,bId,light){
+  if(aId===bId) return {kind:'same'};
+  const g=P(bId).gender, r=blood(aId,bId);
+  if(r){
+    let half=false;
+    if(r.a===1&&r.b===1){ const pa=parentsOf(aId), pb=parentsOf(bId); half = pa.length>=2 && pb.length>=2 && pa.filter(x=>pb.includes(x)).length===1; }
+    return {kind:'blood', term:bloodTerm(r.a,r.b,g,half), commons:r.commons.filter(c=>c!==aId&&c!==bId), path:r.path};
+  }
+  if(spousesOf(aId).includes(bId)) return {kind:'marriage', term:g3(g,'husband','wife','spouse'), path:[aId,bId]};
+  let best=null; const consider=(score,term)=>{ if(!best||score<best.score) best={score,term}; };
+  for(const s of spousesOf(bId)){ const r2=blood(aId,s); if(r2) consider(r2.a+r2.b+1, inLawViaRelative(r2,g,P(s))); }
+  for(const s of spousesOf(aId)){ const r2=blood(s,bId); if(r2) consider(r2.a+r2.b+1, inLawViaSpouse(r2,g,P(s))); }
+  for(const sa of spousesOf(aId)) for(const sb of spousesOf(bId)){
+    if(sa===sb) continue; const r3=blood(sa,sb); if(!r3) continue;
+    const t = (r3.a===1&&r3.b===1) ? g3(g,'brother-in-law','sister-in-law','sibling-in-law')
+      : `${g3(P(sa).gender,'husband','wife','spouse')}’s ${bloodTerm(r3.a,r3.b,P(sb).gender)}’s ${g3(g,'husband','wife','spouse')}`;
+    consider(r3.a+r3.b+2, t);
+  }
+  if(light){ if(best) return {kind:'marriage', term:best.term}; return component(aId).has(bId)?{kind:'distant'}:{kind:'none'}; }
+  const path=graphPath(aId,bId);
+  if(best) return {kind:'marriage', term:best.term, path};
+  if(path) return {kind:'distant', path};
+  return {kind:'none'};
+}
+/* ---------- generations ---------- */
+function genOf(p,book){ const g=(p.gens||[]).find(x=>x[0]===book); return g?{n:g[1],married:!!g[2]}:null; }
+function relGenWord(k){
+  if(k===0) return 'same generation as';
+  if(k>0) return `${k} generation${k>1?'s':''} above`;
+  return `${-k} generation${k<-1?'s':''} below`;
+}
+function relGenName(k,hn){
+  if(k===0) return `${hn}’s own generation`;
+  if(k>0) return `${hn}’s ${ancPl(k)}’ generation`;
+  const d=-k; return `${hn}’s ${d===1?'children':d===2?'grandchildren':greats(d-2)+'grandchildren'}’s generation`;
+}
+function genLines(p){
+  const out=[];
+  for(const [book,n,flag] of (p.gens||[])){
+    const married = flag && spousesOf(p.id).some(s=>{ const g=genOf(P(s),book); return g&&!g.married&&g.n===n; });
+    out.push(flag ? (married ? `Married into generation ${n} of the ${book} book` : `Generation ${n} of the ${book} book (by marriage)`) : `Generation ${n} of the ${book} book`);
+  }
+  return out;
+}
+function genVsHome(p){
+  if(!S.home||p.id===S.home) return '';
+  const H=P(S.home);
+  for(const book of ['Nölting','Ehlers']){
+    const a=genOf(H,book), b=genOf(p,book);
+    if(a&&b){ const k=a.n-b.n, hn=esc(shortName(H)); return k===0?`${hn}’s generation`:`${relGenName(k,hn)} (${relGenWord(k)} ${hn})`; }
+  }
+  return '';
+}
+function genTag(p){ return (p.gens||[]).map(([b,n,f])=>`${b} gen ${n}${f?'*':''}`).join(' · '); }
+
+/* ---------- plain-English explanations ---------- */
+const ORDC=['','First','Second','Third','Fourth','Fifth','Sixth','Seventh','Eighth','Ninth','Tenth'];
+const NUMW=['zero','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve'];
+const numw=n=>NUMW[n]||String(n);
+function ancPl(n){ return n===1?'parents':n===2?'grandparents':greats(n-2)+'grandparents'; }
+function ancSg(n,g){ return n===1?g3(g,'father','mother','parent'):greats(n-2)+g3(g,'grandfather','grandmother','grandparent'); }
+function descSg(n,g){ return n===1?g3(g,'son','daughter','child'):greats(n-2)+g3(g,'grandson','granddaughter','grandchild'); }
+function cousinLevel(d){ return (ORD[d]||d+'th'); }
+function joinNames(ids){ const n=ids.map(i=>`<b>${esc(fullName(P(i)))}</b>`); return n.length<=1?n.join(''):n.slice(0,-1).join(', ')+' and '+n[n.length-1]; }
+function shortPair(ids){ const n=ids.map(i=>esc(shortName(P(i)))); return n.length<=1?n.join(''):n.slice(0,-1).join(', ')+' and '+n[n.length-1]; }
+function lifeNote(id){ const p=P(id), b=yr(p.born); return b?` (b. ${b}${p.birthplace?' in '+esc(p.birthplace.split(',')[0]):''})`:''; }
+function pctText(x){ const p=x*100; return p>=1?`${Math.round(p)}%`:p>=0.1?`${p.toFixed(1)}%`:`${p.toFixed(2)}%`; }
+function explain(aId,bId){
+  if(!aId||!bId||aId===bId) return '';
+  const A=P(aId), B=P(bId), r=relate(aId,bId);
+  const sameFirst = norm(A.first)===norm(B.first);
+  const shortName = p => (!sameFirst && (p===A||p===B) && p.first) ? p.first : (p.first||fullName(p));
+  const An=esc(shortName(A)), Bn=esc(shortName(B));
+  const poss = n => n + '’s';
+  const out=[]; const para=t=>out.push(`<p>${t}</p>`); const list=items=>out.push('<ul>'+items.map(i=>`<li>${i}</li>`).join('')+'</ul>');
+  if(r.kind==='blood'){
+    const bl=blood(aId,bId), a=bl.a, b=bl.b, commons=r.commons.length?r.commons:[bl.c];
+    const comm=joinNames(commons), cshort=commons.map(i=>esc(P(i).first||fullName(P(i))) + (P(i).last?' '+esc(P(i).last):'')).join(' and '), they=commons.length>1?'are':'is';
+    const back=relate(bId,aId);
+    if(a===0||b===0){
+      const anc = a===0?A:B, desc = a===0?B:A, n=Math.max(a,b);
+      para(`${esc(shortName(desc))} descends directly from ${esc(shortName(anc))}: ${numw(n)} generation${n>1?'s':''} down the same family line. ${esc(shortName(anc))} is ${esc(poss(shortName(desc)))} ${ancSg(n,anc.gender)}, and ${esc(shortName(desc))} is ${esc(poss(shortName(anc)))} ${descSg(n,desc.gender)}.`);
+      if(n>=2) para(`Each generation is one parent-to-child step. The line runs through every person listed below.`);
+    } else if(a===1&&b===1){
+      para(`${An} and ${Bn} are ${r.term.includes('half')?'half-siblings: they share one parent':'siblings: they share the same parents'}, ${comm}.`);
+    } else if(a===1){
+      const sib=bl.path[1+0]; const sibId=bl.path[a+1]; // A's sibling = first step down from common ancestor on B's side
+      const s2=bl.path[a+1];
+      para(`${Bn} descends from ${An}’s ${g3(P(s2).gender,'brother','sister','sibling')}, <b>${esc(fullName(P(s2)))}</b>. ${Bn} is ${esc(poss(shortName(P(s2))))} ${descSg(b-1,B.gender)}, which makes ${Bn} ${An}’s ${esc(r.term)}.`);
+      if(b>2) para(`Each “great-” or “grand” adds a generation below ${An}’s ${g3(P(s2).gender,'brother','sister','sibling')}.`);
+    } else if(b===1){
+      const anc=bl.path[a-1];
+      para(`${Bn} is the ${g3(B.gender,'brother','sister','sibling')} of ${An}’s ${ancSg(a-1,P(anc).gender)}, <b>${esc(fullName(P(anc)))}</b>. That makes ${Bn} ${An}’s ${esc(r.term)}.`);
+      if(a>2) para(`An ${g3(B.gender,'uncle','aunt','aunt or uncle')} is a sibling of your parent; each “great-” adds one more generation. ${Bn} belongs to the same generation as ${An}’s ${ancPl(a-1)}.`);
+    } else {
+      const deg=Math.min(a,b)-1, rem=Math.abs(a-b), deeper=a>b?A:B, closer=a>b?B:A, dn=esc(shortName(deeper)), cn=esc(shortName(closer));
+      const levelWord=cousinLevel(deg), Level=levelWord[0].toUpperCase()+levelWord.slice(1);
+      para(`It means ${An} and ${Bn} share ancestors ${numw(Math.max(a,b))} generations back${rem?` on ${dn}’s side, and they’re ${numw(rem)} generation${rem>1?'s':''} apart`:` on both sides. They’re in the same generation`}.`);
+      para(`“${Level} cousin” describes how far back the shared ancestors are. Each cousin level adds one generation:`);
+      const items=[]; for(let d=1; d<=Math.max(deg,2); d++) items.push(`${ORDC[d]||d+'th'} cousins share ${ancPl(d+1)}.`);
+      list(items);
+      para(`${An} and ${Bn} share ${comm}${commons.length===1?lifeNote(commons[0]):''}. That makes them ${levelWord} cousins.`);
+      if(rem){
+        const times=rem===1?'once':rem===2?'twice':numw(rem)+' times';
+        const xId = a>b ? bl.path[rem] : bl.path[bl.path.length-1-rem];
+        const X=P(xId), xn=esc(shortName(X));
+        para(`“${times[0].toUpperCase()+times.slice(1)} removed” means they’re ${numw(rem)} generation${rem>1?'s':''} apart. ${cshort} ${they} ${esc(poss(shortName(closer)))} ${ancPl(Math.min(a,b))} but ${esc(poss(shortName(deeper)))} ${ancPl(Math.max(a,b))}. So ${cn} is ${numw(rem)} generation${rem>1?'s':''} closer to them, the same generation as ${dn}’s ${ancSg(rem,X.gender)}, ${xn}.`);
+        para(`An easy way to picture it:`);
+        list([`<b>${xn} and ${cn} are ${levelWord} cousins.</b> They’re in the same generation.`,
+              `<b>${dn} is ${esc(poss(xn))} ${descSg(rem,deeper.gender)}</b>, so ${dn} is ${numw(rem)} step${rem>1?'s':''} down from that line. That’s the “${times} removed.”`]);
+        para(`The same rule applies the other way: ${Bn} is ${An}’s ${esc(r.term)}, and ${An} is ${esc(poss(Bn))}${back.term?' '+esc(back.term):''}.`);
+      } else {
+        para(`They’re in the same generation, so there’s no “removed.” ${Bn} is ${An}’s ${esc(r.term)}, and ${An} is ${esc(poss(Bn))} too.`);
+      }
+      const share = commons.length*Math.pow(0.5,a+b);
+      const close = share>=0.03?'a close':share>=0.005?'a fairly close':'a real but distant';
+      para(`In practical terms, it’s ${close} blood connection. ${cshort} ${commons.length>1?'are '+numw(commons.length):'is one'} of ${esc(poss(shortName(A)))} ${Math.pow(2,a)} ${ancPl(a)} and ${commons.length>1?numw(commons.length):'one'} of ${esc(poss(shortName(B)))} ${Math.pow(2,b)}. On average, relatives this far apart share about ${pctText(share)} of their DNA${deg>=3?', which may be too little to show up on a consumer DNA test':''}.`);
+      const local = commons.some(c=>/Stover|Morgan County/i.test([P(c).notes,P(c).birthplace,P(c).died].join(' ')));
+      if(local && deg>=2) para(`${cshort} ${commons.length>1?'were':'was'} part of the Stover / Morgan County community, so many local families may turn out to be cousins at this level.`);
+    }
+  } else if(r.kind==='marriage'){
+    para(`${Bn} isn’t a blood relative of ${An}. They’re connected through marriage: ${Bn} is ${An}’s <b>${esc(r.term)}</b>. Follow the links below to see who married whom.`);
+  } else if(r.kind==='distant'){
+    para(`No shared ancestor shows up in the books, so ${An} and ${Bn} aren’t blood relatives as far as these records go. They’re linked by a chain of marriages (shown below), and there’s no everyday name for a connection that roundabout.`);
+    para(`If you expected them to be blood family, a misread entry in the scanned books may have broken the link. Check the book numbers on each person’s page.`);
+  } else if(r.kind==='none'){
+    para(`Nothing in the books connects ${An} and ${Bn}, by blood or by marriage. They may still be related through people who aren’t in these two books.`);
+  }
+  if(!out.length) return '';
+  return `<div class="explain"><h4>What this means</h4>${out.join('')}<p class="hint">Worked out from the Nölting and Ehlers books. If something looks off, check the book entries (#) on each person’s page.</p></div>`;
+}
+function stepWord(x,y){ // y relative to x, one step
+  const g=P(y).gender;
+  if(parentsOf(x).includes(y)) return g3(g,'father','mother','parent');
+  if(childrenOf(x).includes(y)) return g3(g,'son','daughter','child');
+  return g3(g,'husband','wife','spouse');
+}
+function pathHTML(path){
+  if(!path || path.length<2) return '';
+  let h='<ol class="path">', anyM=false;
+  for(let i=1;i<path.length;i++){ const x=path[i-1], y=path[i]; const m=!parentsOf(x).includes(y)&&!childrenOf(x).includes(y); anyM=anyM||m;
+    h+=`<li class="${m?'m':''}"><a href="#" data-go="${y}"><b>${esc(shortName(P(y)))}</b></a> <span class="how">is ${esc(poss(shortName(P(x))))} ${stepWord(x,y)}</span></li>`; }
+  return h+'</ol>'+(anyM?'<div class="pathkey"><span><i></i>by birth</span><span><i class="m"></i>by marriage</span></div>':'');
+}
+
+/* ---------- rendering ---------- */
+function renderHeader(){
+  const n=S.people.size;
+  $('#sub').textContent = !S.loaded ? 'Loading…' : n ? `${n} ${n===1?'person':'people'} in the tree` : 'No one added yet';
+  const h=P(S.home);
+  $('#homePill').innerHTML = h ? `Relationships shown to <b>${esc(fullName(h))}</b> · <button class="linkbtn" data-homeact="off">Turn off</button>`
+    : `General view · <button class="linkbtn" data-homeact="pick" title="Open your own page and choose “Show how everyone is related to me”">Show how people are related to me</button>`;
+}
+function renderResults(){
+  const q=$('#q').value, {list,fuzzy}=search(q), box=$('#results');
+  $('#count').textContent = q ? `${list.length} match${list.length===1?'':'es'}` : (list.length ? 'Everyone (A–Z by last name)' : '');
+  if(!S.loaded){ box.innerHTML='<div class="dym">Loading…</div>'; return; }
+  if(!S.people.size){ box.innerHTML=''; return; }
+  if(!list.length){ box.innerHTML=`<div class="dym">No one matches “${esc(q)}”.</div>`; return; }
+  let h = fuzzy ? `<div class="dym">No exact match — did you mean:</div>` : '', last='';
+  for(const p of list.slice(0,S.shown)){
+    if(!q){ const L=p.last?p.last[0].toUpperCase():(p.first?'First name only':'Name not given'); if(L!==last){ h+=`<div class="letter">${esc(L)}</div>`; last=L; } }
+    const mn=marriedNames(p), rt=relTag(p.id);
+    h+=`<button class="row ${p.id===S.selected?'sel':''}" data-go="${p.id}"><span>${esc(fullName(p))}${mn.length?` <small>(m. ${esc(mn.join(', '))})</small>`:''}${rt?`<br><small class="rt">${esc(rt)}</small>`:''}</span><small>${esc(life(p))}${genTag(p)?`<br>${genTag(p)}`:''}</small></button>`;
+  }
+  if(list.length>S.shown) h+=`<div class="dym"><button class="btn" data-act="more">Show more (${list.length-S.shown} left)</button></div>`;
+  box.innerHTML=h;
+}
+function relTag(id){
+  if(!S.home || id===S.home) return id===S.home?'Home person':'';
+  if(S.relCache.has(id)) return S.relCache.get(id);
+  const r=relate(S.home,id,true), hn=shortName(P(S.home));
+  const t = r.term ? `${hn}’s ${r.term}` : r.kind==='distant' ? `Linked to ${hn} by marriage` : 'No known link';
+  S.relCache.set(id,t); return t;
+}
+function chip(id,label){ const p=P(id); return `<button class="chip" data-go="${id}"><span>${esc(fullName(p))}</span><small>${esc(label||life(p)||'')}</small></button>`; }
+function famGroup(title, ids, labelFn){ if(!ids.length) return ''; return `<div><h4>${title}</h4><div class="chips">${ids.map(i=>chip(i,labelFn?labelFn(i):'')).join('')}</div></div>`; }
+function renderProfile(){
+  const el=$('#profile'), p=P(S.selected);
+  if(!S.loaded){ el.innerHTML='<div class="empty">Loading the tree…</div>'; return; }
+  if(!S.people.size){ el.innerHTML=`<div class="empty"><h3>Your tree is empty</h3>Add the first person to get started — or ask Chris to add a list of names.<div class="actions" style="justify-content:center"><button class="btn primary" data-act="new">＋ Add the first person</button></div></div>`; return; }
+  if(!p){ el.innerHTML='<div class="empty"><h3>Find someone</h3>Search on the left, or pick a name from the list, to see their details and family.</div>'; return; }
+  const id=p.id, par=parentsOf(id), sibs=siblingsOf(id), sps=spousesOf(id), kids=childrenOf(id);
+  const gps=[...new Set(par.flatMap(parentsOf))], gks=[...new Set(kids.flatMap(childrenOf))];
+  const meta=[life(p), p.birthplace?`Born in ${p.birthplace}`:''].filter(Boolean);
+  const dates=[p.born?`Born ${p.born}`:'', p.died?`Died ${p.died}`:''].filter(Boolean).join(' · ');
+  let rel='';
+  if(S.home && S.home!==id){ const r=relate(S.home,id,true);
+    rel = r.term ? `<div class="torel">${esc(poss(shortName(P(S.home))))} ${esc(r.term)}</div>`
+      : r.kind==='distant' ? `<div class="torel">Connected to ${esc(shortName(P(S.home)))} by marriage</div>` : ''; }
+  else if(S.home===id) rel='<div class="torel">Home person</div>';
+  el.innerHTML = `
+    ${portrait(id)}<div class="pname">${esc(fullName(p))}</div>
+    <div class="pmeta">${[p.nickname?`“${esc(p.nickname)}”`:'', p.maiden?`née ${esc(p.maiden)}`:'', marriedNames(p).length?`Married name: ${esc(marriedNames(p).join(', '))}`:'', esc(meta[1]||'')].filter(Boolean).join(' · ')}</div>
+    ${dates?`<div class="pmeta">${esc(dates)}</div>`:''}
+    ${rel}
+    ${S.home && S.home!==id ? `<details class="explainbox"><summary>What this means: how ${esc(shortName(p))} is related to ${esc(shortName(P(S.home)))}</summary><div data-explain="${id}"></div></details>`:''}
+    ${(p.gens||[]).length?`<div class="gen"><b>${genLines(p).map(esc).join(' · ')}</b>${genVsHome(p)?`<br>${genVsHome(p)}`:''}</div>`:''}
+    ${(p.refs||[]).length?`<div class="pmeta">In the books: ${p.refs.map(([b,n])=>`${esc(b)} #${n}`).join(' · ')}</div>`:''}
+    ${obitBlock(id)}
+    ${p.notes?`<details class="notes" ${p.notes.length<500?'open':''}><summary>From the book${(p.refs||[]).length?'':' / notes'}</summary>${esc(p.notes)}</details>`:''}
+    <div class="actions">
+      <button class="btn primary" data-act="edit">Edit</button>
+      <button class="btn" data-act="compare">How are they related to…</button>
+      ${(p.scans||[]).length?`<button class="btn" data-scan="${p.scans[0][0]}${String(p.scans[0][1]).padStart(3,'0')}" data-for="${p.id}">📄 See original page</button>`:''}
+      <button class="btn" data-act="addParent">＋ Parent</button>
+      <button class="btn" data-act="addSpouse">＋ Spouse</button>
+      <button class="btn" data-act="addChild">＋ Child</button>
+      <button class="btn" data-act="addSibling">＋ Sibling</button>
+      ${S.home!==id?'<button class="btn" data-act="home">Show how everyone is related to this person</button>':'<button class="btn" data-act="unhome">Stop showing relationships</button>'}
+      <button class="btn danger" data-act="delete">Delete</button>
+    </div>
+    <div class="fam">
+      ${famGroup('Grandparents', gps)}
+      ${famGroup('Parents', par, i=>g3(P(i).gender,'Father','Mother','Parent'))}
+      ${famGroup('Siblings', [...sibs.keys()], i=>(sibs.get(i)==='half'?'Half-':'')+g3(P(i).gender,'brother','sister','sibling'))}
+      ${famGroup(sps.length>1?'Spouses':'Spouse', sps)}
+      ${famGroup('Children', kids, i=>g3(P(i).gender,'Son','Daughter','Child'))}
+      ${famGroup('Grandchildren', gks)}
+      ${!par.length&&!sibs.size&&!sps.length&&!kids.length?'<div class="hint">No family links yet. Use the ＋ buttons above to connect this person.</div>':''}
+    </div>`;
+}
+function renderAnswer(){
+  const a=$('#relA').dataset.id, b=$('#relB').dataset.id, el=$('#answer');
+  if(!a||!b||!P(a)||!P(b)){ el.innerHTML=''; return; }
+  const r=relate(a,b), A=P(a), B=P(b);
+  if(r.kind==='same'){ el.innerHTML='<div class="answer"><div class="big">That’s the same person.</div></div>'; return; }
+  if(r.kind==='none'){ el.innerHTML=`<div class="answer"><div class="big">No connection found between ${esc(shortName(B))} and ${esc(shortName(A))} yet.</div><div class="rev">Add the people who link them (parents, spouses) and try again.</div></div>`; return; }
+  const back=relate(b,a);
+  let h='<div class="answer">';
+  if(r.term){
+    h+=`<div class="big">${esc(fullName(B))} is ${esc(poss(fullName(A)))} <b>${esc(r.term)}</b>.</div>`;
+    if(back.term) h+=`<div class="rev">And ${esc(shortName(A))} is ${esc(poss(shortName(B)))} ${esc(back.term)}.</div>`;
+  } else {
+    h+=`<div class="big">${esc(fullName(B))} and ${esc(fullName(A))} are connected by marriage, but there’s no everyday name for it.</div><div class="rev">Here’s the link:</div>`;
+  }
+  if(r.commons && r.commons.length) h+=`<div class="meta">Closest common ancestor${r.commons.length>1?'s':''}: ${r.commons.map(c=>`<a href="#" data-go="${c}">${esc(fullName(P(c)))}</a>`).join(' & ')}</div>`;
+  h+=pathHTML(r.path)+'</div>';
+  h+=explain(a,b);
+  el.innerHTML=h;
+}
+async function renderHistory(){
+  const box=$('#histList'); if(!box) return;
+  const list=(S.history||[]).slice(0,200);
+  if(!S.db) return;
+  if(!list.length){ box.innerHTML='<div class="dym">No changes yet. When anyone in the family adds or fixes someone, it shows up here.</div>'; return; }
+    const owner=S.isOwner;
+  box.innerHTML=list.map(x=>{ const who=x.by||'Someone'; const d=new Date(x.at);
+    return `<div class="row brow" style="cursor:default"><span class="bnum">${d.toLocaleDateString(undefined,{month:'short',day:'numeric'})}</span><span class="bmain"><b>${esc(who)}</b> ${esc(x.action||'changed')} <a href="#" data-go="${esc(x.pid)}">${esc(x.name||'someone')}</a> <small>${d.toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})}${x.undone?' · undone':''}</small></span>${owner&&!x.undone?`<button class="btn" data-undo="${esc(x.id)}">Undo</button>`:''}</div>`; }).join('');
+}
+document.addEventListener('click', async e=>{ const b=e.target.closest('[data-undo]'); if(!b) return;
+  const x=(S.history||[]).find(h=>h.id===b.dataset.undo); if(!x||!S.col) return;
+  const ok=await guarded(async()=>{ if(x.before){ await S.col.doc(x.pid).set(JSON.parse(x.before)); } else { await S.col.doc(x.pid).delete(); }
+    await S.db.doc('history/'+x.id).update({undone:true}); });
+  if(ok) toast('Change undone');
+});
+function renderBackup(){ renderHistory();
+  const arr=[...S.edits].map(([id,e])=>({...e,id}));
+  $('#exportBox').value=JSON.stringify(arr,null,1);
+}
+function renderAll(){ renderHeader(); renderResults(); renderProfile(); if(S.tab==='relate') renderAnswer(); if(S.tab==='books') renderBook(); if(S.tab==='obit'){ renderObitHistory(); renderInbox(); } if(S.tab==='backup') renderBackup(); }
+const BOOKINFO={ 'Nölting':'“Nölting Descendants from District of Hameln-Pyrmont, Germany” — Joan Nolting Shepp, editor, 1997. Starts with Hans Nölting (c. 1620).',
+  'Ehlers':'“Anton Ehlers Descendants — Bliedersdorf, Hannover, Germany” (1998). Anton Ehlers (b. 1792) is #8.' };
+function renderGallery(){
+  const b=S.book||'Nölting', q=norm($('#bookq').value), cat=S.cat||'';
+  const items=(S.gallery||[]).filter(g=>g.book===b && (!cat||g.cat===cat) && (!q || q.split(' ').every(t=>norm(g.title+' '+g.caption+' page '+g.page).includes(t))));
+  $('#bookinfo').textContent = BOOKINFO[b] + `  ${items.length} picture${items.length===1?'':'s'}, map${items.length===1?'':'s'} and documents${q||cat?' match':''}. Click one to see it full size.`;
+  if(!S.gallery){ $('#gallery').innerHTML='<div class="dym">Loading pictures…</div>'; return; }
+  $('#gallery').innerHTML = items.map(g=>`<button class="gcard" data-scan="${BOOKTAG[g.book]}${String(g.page).padStart(3,'0')}">${pageImg(BOOKTAG[g.book]+String(g.page).padStart(3,'0'),'gthumb')}<span class="gcat">${esc(g.cat)}</span><span class="gtitle">${esc(g.title)}</span><span class="gpage">Page ${g.page} of the scan</span></button>`).join('') || '<div class="dym">Nothing matches.</div>';
+}
+function openPic(img){
+  const g=(S.gallery||[]).find(x=>x.img===img); if(!g) return;
+  const people = g.book==='Nölting' ? (g.refs||[]).map(n=>[...S.people.values()].find(p=>(p.refs||[]).some(([bk,k])=>bk==='Nölting'&&k===n))).filter(Boolean) : [];
+  $('#modal').innerHTML = `<div class="sheet picsheet"><div class="pichead"><h2>${esc(g.title)}</h2><button class="btn" data-act="cancel">Close</button></div>
+    <div class="pmeta">${esc(g.book)} book · ${esc(g.cat)} · page ${g.page} of the scan</div>
+    <div class="pagewrap">${pageImg(BOOKTAG[g.book]+String(g.page).padStart(3,'0'),'pageimg')}</div>
+    ${people.length?`<div class="fam"><div><h4>People referenced on this page</h4><div class="chips">${people.map(p=>chip(p.id)).join('')}</div></div></div>`:''}
+    ${g.caption?`<details class="notes"><summary>Text read from this page (scanned, may contain errors)</summary>${esc(g.caption)}</details>`:''}
+  </div>`;
+  $('#modal').classList.remove('hidden');
+}
+const BOOKTAG={'Nölting':'n','Ehlers':'e'}, TAGBOOK={n:'Nölting',e:'Ehlers'};
+function pageImg(key, cls){ const t=key[0], p=+key.slice(1), start=p-((p-1)%2), src=`pages/${t}${String(start).padStart(3,'0')}.jpg`;
+  return `<img class="${cls||'pageimg'}" loading="lazy" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" data-esrc="${src}" style="object-position:center ${(p-1)%2?'bottom':'top'}" alt="${esc(TAGBOOK[t])} book page ${p}">`; }
+function pageLabel(key){ const g=(S.gallery||[]).find(x=>BOOKTAG[x.book]===key[0] && x.page===+key.slice(1)); return g?g.title:''; }
+function scanView(){ if(!S.scanView){ try{ S.scanView=localStorage.getItem('scanView')||'grid'; }catch(e){ S.scanView='grid'; } } return S.scanView; }
+document.addEventListener('click', e=>{ const b=e.target.closest('#scanview [data-sv]'); if(!b) return; S.scanView=b.dataset.sv; try{ localStorage.setItem('scanView',S.scanView); }catch(err){} renderScanList(); });
+function renderScanList(){
+  const b=S.book||'Nölting', t=BOOKTAG[b], q=norm($('#bookq').value);
+  let keys=textPages(t);
+  if(q) keys=keys.filter(k=>{ const num=q.replace(/^page\s*/,''); if(/^\d+$/.test(num)) return String(+k.slice(1)).startsWith(num); return norm(pageLabel(k)).includes(q) || (S.scanIdx.get(k)||[]).some(id=>cached(P(id)).h.includes(q)); });
+  $('#bookinfo').textContent = BOOKINFO[b] + `  ${keys.length} scanned text pages${q?' match':''}, cover to index. Photo and map pages are under Pictures & maps. Click a page to read it; use the arrows to turn pages.`;
+  const sv=scanView(); $('#scanlist').className = sv==='list' ? 'list tall' : 'gallery';
+  document.querySelectorAll('#scanview [data-sv]').forEach(b=>b.classList.toggle('on', b.dataset.sv===sv));
+  $('#scanlist').innerHTML = keys.map(k=>{ const ids=(S.scanIdx.get(k)||[]).filter(id=>(P(id).refs||[]).length); const lab=pageLabel(k), pg=+k.slice(1);
+    if(sv==='list'){ const names=ids.slice(0,6).map(id=>esc(fullName(P(id)))).join(', ');
+      return `<button class="row brow" data-scan="${k}"><span class="bnum">p. ${pg}</span><span class="bmain">${lab?`<b>${esc(lab)}</b>${names?'<br>':''}`:''}${names}${ids.length>6?` <small>+${ids.length-6} more</small>`:''}${!lab&&!names?'<small>Page '+pg+'</small>':''}</span></button>`; }
+    const names=ids.slice(0,3).map(id=>esc(fullName(P(id)))).join(', ');
+    return `<button class="gcard" data-scan="${k}">${pageImg(k,'gthumb')}<span class="gcat">Page ${pg}</span><span class="gtitle">${lab?esc(lab):(names||'Page '+pg)}${!lab&&ids.length>3?` <small>+${ids.length-3} more</small>`:''}</span></button>`; }).join('') || '<div class="dym">No pages match.</div>';
+}
+function openScan(key, pid){
+  const t=key[0], pg=+key.slice(1), book=TAGBOOK[t];
+  let sameBook=textPages(t); if(!sameBook.includes(key)) sameBook=S.scanKeys.filter(k=>k[0]===t); const i=sameBook.indexOf(key);
+  const prev=sameBook[i-1], next=sameBook[i+1];
+  const ids=(S.scanIdx.get(key)||[]);
+  const mine = pid ? (P(pid).scans||[]).map(([tt,pp])=>tt+String(pp).padStart(3,'0')) : [];
+  $('#modal').innerHTML = `<div class="sheet picsheet"><div class="pichead"><h2>${esc(book)} book, page ${pg}</h2><button class="btn" data-act="cancel">Close</button></div>
+    ${pid?`<div class="pmeta">Original scan for <b>${esc(fullName(P(pid)))}</b>${mine.length>1?' · their pages: '+mine.map(k=>`<button class="btn ${k===key?'primary':''}" data-scan="${k}" data-for="${pid}">${esc(TAGBOOK[k[0]])} p. ${+k.slice(1)}</button>`).join(' '):''}</div>`:''}
+    <div class="scannav"><button class="btn" ${prev?`data-scan="${prev}"`:'disabled'}>← Previous page</button><span class="pmeta">Page ${pg} of the scanned book</span><button class="btn" ${next?`data-scan="${next}"`:'disabled'}>Next page →</button></div>
+    <div class="pagewrap">${pageImg(key,'pageimg')}</div>${pageLabel(key)?`<div class="pmeta" style="margin-top:6px">${esc(pageLabel(key))}</div>`:''}
+    ${ids.length?`<div class="fam"><div><h4>People on this page</h4><div class="chips">${ids.map(id=>chip(id)).join('')}</div></div></div>`:''}
+  </div>`;
+  $('#modal').classList.remove('hidden');
+  const sh=$('#modal .sheet'); if(sh) sh.scrollIntoView({block:'start'});
+}
+function renderBook(){
+  const pics = S.bview==='pics', scans = S.bview==='scans';
+  $('#booklist').classList.toggle('hidden',pics||scans); $('#gallery').classList.toggle('hidden',!pics); $('#catrow').classList.toggle('hidden',!pics); $('#scanlist').classList.toggle('hidden',!scans); $('#scanview').classList.toggle('hidden',!scans);
+  document.querySelectorAll('[data-view]').forEach(x=>x.classList.toggle('on',x.dataset.view===(S.bview||'entries')));
+  document.querySelectorAll('[data-cat]').forEach(x=>x.classList.toggle('on',x.dataset.cat===(S.cat||'')));
+  $('#bookq').placeholder = pics ? 'Search captions… (a name, a place, “map”, “obituary”)' : 'Filter this book… (name, place, year, or #number)';
+  document.querySelectorAll('[data-book]').forEach(x=>x.classList.toggle('on',x.dataset.book===(S.book||'Nölting')));
+  $('#booktitle').textContent = `${S.book==='Ehlers'?'Anton Ehlers Descendants':'Nölting Descendants'}: ${pics?'Pictures & maps':scans?'Scanned pages':'Entries'}`;
+  if(pics) return renderGallery();
+  if(scans){ $('#bookq').placeholder='Find a page… (a name, a place, or a page number)'; return renderScanList(); }
+  const b=S.book||'Nölting', q=norm($('#bookq').value), box=$('#booklist');
+  document.querySelectorAll('[data-book]').forEach(x=>x.classList.toggle('on',x.dataset.book===b));
+  let rows=[];
+  for(const p of S.people.values()) for(const [bk,n] of (p.refs||[])) if(bk===b) rows.push([n,p]);
+  rows.sort((x,y)=>x[0]-y[0]);
+  if(q){ const num=q.replace(/^#/,''); rows = /^\d+$/.test(num) ? rows.filter(([n])=>String(n).startsWith(num)) : rows.filter(([n,p])=>q.split(' ').every(t=>cached(p).h.includes(t))); }
+  $('#bookinfo').textContent = BOOKINFO[b] + `  ${rows.length} entries${q?' match':''}. Entries are in the book’s own order; click anyone to open their page.`;
+  let h='', lastG=null; const H=P(S.home), hg=H&&genOf(H,b);
+  for(const [n,p] of rows.slice(0,S.bookShown||400)){
+    const g=genOf(p,b);
+    if(g && g.n!==lastG){ lastG=g.n; const k=hg?hg.n-g.n:null;
+      h+=`<div class="genhead">${ORDC[g.n]||g.n+'th'} generation${k!==null?` <small>${relGenName(k,esc(shortName(H)))}</small>`:''}</div>`; }
+    const rt=relTag(p.id);
+    h+=`<button class="row brow" data-go="${p.id}"><span class="bnum">#${n}</span><span class="bmain">${esc(fullName(p))} <small>${esc(life(p))}</small>${rt?`<br><small class="rt">${esc(rt)}</small>`:''}</span></button>`;
+  }
+  if(rows.length>(S.bookShown||400)) h+=`<div class="dym"><button class="btn" data-act="bookmore">Show more (${rows.length-(S.bookShown||400)} left)</button></div>`;
+  box.innerHTML = h || '<div class="dym">No entries match.</div>';
+}
+function setTab(t){
+  S.tab=t;
+  document.querySelectorAll('nav [data-tab]').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));
+  ['find','relate','books','obit','backup'].forEach(x=>$('#tab-'+x).classList.toggle('hidden',x!==t));
+  renderAll();
+}
+function select(id){
+  S.selected=id; if(S.tab!=='find') setTab('find'); else { renderResults(); renderProfile(); }
+  if(window.innerWidth<820) $('#profile').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* ---------- person pickers ---------- */
+function makePicker(input,{onPick,exclude=()=>[]}){
+  const box=document.createElement('div'); box.className='dd hidden'; input.parentNode.appendChild(box);
+  let items=[];
+  const show=()=>{ const ex=new Set(exclude()); items=search(input.value).list.filter(p=>!ex.has(p.id)).slice(0,8);
+    box.innerHTML = items.length ? items.map((p,i)=>`<div class="opt ${i===0?'hi':''}" data-id="${p.id}"><span>${esc(fullName(p))}</span><small>${esc(life(p))}</small></div>`).join('')
+      : `<div class="opt none">${S.people.size?'No match':'No one in the tree yet'}</div>`;
+    box.classList.remove('hidden'); };
+  const hide=()=>box.classList.add('hidden');
+  input.addEventListener('focus',show);
+  input.addEventListener('input',()=>{ delete input.dataset.id; show(); });
+  input.addEventListener('blur',()=>setTimeout(hide,150));
+  input.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); if(items[0]){ onPick(items[0].id); hide(); } } if(e.key==='Escape') hide(); });
+  box.addEventListener('mousedown',e=>{ const o=e.target.closest('.opt[data-id]'); if(!o) return; e.preventDefault(); onPick(o.dataset.id); hide(); input.blur(); });
+}
+function setRel(input,id){ if(id && P(id)){ input.value=fullName(P(id)); input.dataset.id=id; } else { input.value=''; delete input.dataset.id; } }
+makePicker($('#relA'),{onPick:id=>{ setRel($('#relA'),id); renderAnswer(); }});
+makePicker($('#relB'),{onPick:id=>{ setRel($('#relB'),id); renderAnswer(); }});
+
+function setHome(id){ S.home=id||null; S.relCache&&S.relCache.clear&&S.relCache.clear(); try{localStorage.setItem('ft-home2', id||'none');}catch(_){} renderAll(); }
+document.addEventListener('click', e=>{ const b=e.target.closest('[data-homeact]'); if(!b) return;
+  if(b.dataset.homeact==='off'){ setHome(null); toast('General view: no relationships shown'); }
+  else { setTab('find'); $('#q').focus(); toast('Look yourself up, open your page, and choose “Show how everyone is related to this person”'); } });
+function resolveName(s){
+  s=norm(s).replace(/^(my|the)\s+/,'').replace(/[’']s$/,'');
+  if(['me','i','myself','home'].includes(s)){ if(!S.home) toast('First open your own page and choose “Show how everyone is related to this person”'); return S.home; }
+  const words=s.split(/\s+/).filter(w=>!['uncle','aunt','auntie','grandma','grandpa','cousin','great'].includes(w));
+  const r=search(words.join(' ')).list; return r[0]?.id || null;
+}
+$('#askForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const s=$('#ask').value.trim().replace(/[?.!]+$/,'');
+  const m = s.match(/^(?:how\s+(?:is|are|am)\s+)?(.+?)\s+related\s+to\s+(.+)$/i) || s.match(/^(?:how\s+(?:is|are)\s+)?(.+?)\s+(?:and|&|vs\.?|to)\s+(.+?)(?:\s+related)?$/i);
+  if(!m){ toast('Try: “How is Kate related to Allison?”'); return; }
+  const b=resolveName(m[1]), a=resolveName(m[2]);
+  if(!b){ toast(`Couldn’t find “${m[1]}”`); return; } if(!a){ toast(`Couldn’t find “${m[2]}”`); return; }
+  setRel($('#relB'),b); setRel($('#relA'),a); renderAnswer();
+});
+
+/* ---------- obituaries ---------- */
+let OB=null; // {text, image, data, rows}
+const RELS={parent:'Parent',spouse:'Spouse',child:'Child',sibling:'Brother/sister',grandchild:'Grandchild','great-grandchild':'Great-grandchild','child-in-law':'Son/daughter-in-law','grandchild-in-law':'Grandchild’s spouse','sibling-in-law':'Brother/sister-in-law','parent-in-law':'Parent-in-law',niece_nephew:'Niece/nephew',other:'Other relative'};
+async function fileToText(file){
+  if(/\.txt$/i.test(file.name)) return {text: await file.text()};
+  if(/\.pdf$/i.test(file.name)){
+    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js');
+    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');
+    const lib=window['pdfjs-dist/build/pdf']; const doc=await lib.getDocument({data:await file.arrayBuffer()}).promise;
+    let t=''; for(let i=1;i<=Math.min(doc.numPages,10);i++){ const pg=await doc.getPage(i); const c=await pg.getTextContent(); t+=c.items.map(x=>x.str).join(' ')+'\n'; }
+    if(t.trim().length>40) return {text:t};
+    // scanned PDF: render first page to an image
+    const pg=await doc.getPage(1), vp=pg.getViewport({scale:2}), cv=document.createElement('canvas'); cv.width=vp.width; cv.height=vp.height;
+    await pg.render({canvasContext:cv.getContext('2d'),viewport:vp}).promise;
+    return {image: await new Promise(r=>cv.toBlob(r,'image/jpeg',0.85))};
+  }
+  return {image:file};
+}
+function loadScript(src){ return new Promise((res,rej)=>{ if(document.querySelector(`script[src="${src}"]`)) return res(); const el=document.createElement('script'); el.src=src; el.onload=res; el.onerror=()=>rej(new Error('load')); document.head.appendChild(el); }); }
+const OBIT_PROMPT = `You read obituaries for a family-tree tool. Extract every named person and how they relate to the person who died. Reply with ONLY a JSON object, no prose, in exactly this shape:
+{"deceased":{"first":"","middle":"","last":"","maiden":"","nickname":"","gender":"M|F|","born":"d Mon yyyy or as given","birthplace":"","died":"d Mon yyyy","deathplace":"","residence":""},
+ "source":"newspaper or funeral home if named, else empty","summary":"one short sentence",
+ "people":[{"ref":"p1","first":"","middle":"","last":"","maiden":"","gender":"M|F|","relation":"parent|spouse|child|sibling|grandchild|great-grandchild|child-in-law|grandchild-in-law|sibling-in-law|parent-in-law|niece_nephew|other","of":"deceased or the ref of the person they belong to (e.g. a grandchild's parent ref if the obituary makes it clear, a child-in-law's spouse ref)","deceased":true|false,"residence":"","born":"","died":""}]}
+Rules: "son John (Mary) Smith" means child John Smith with spouse Mary Smith (child-in-law of the deceased, "of" = John's ref). A wife listed like "Mary (Jones) Smith" or "née Jones" has maiden "Jones". "Preceded in death by" means deceased:true. Use the surname shown, or the family surname when only a first name is given for a child. Leave unknown fields empty. Do not invent people or dates.`;
+const MONTHS=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+const MON_RE='(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|June?|July?|Aug(?:ust)?|Sept?(?:ember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\\.?';
+function fmtDate(mon,day,year){ const m=MONTHS.indexOf(mon.slice(0,3).toLowerCase()); return `${+day} ${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][m]} ${year}`; }
+function parseObit(text, nameHint){
+  const t=text.replace(/\s+/g,' ').trim();
+  // name: the typed name, or the words before the first comma ("Margaret Ann (Koch) Schmidt, 88, of Stover…")
+  let raw=(nameHint||'').trim();
+  if(!raw){ const m=t.match(/^(?:Obituary[:\s-]*)?([A-Z][^,.;:]{3,60}?)(?:,| age | passed| died| of )/); raw=m?m[1]:t.split(/[,.]/)[0]; }
+  const maiden=((raw.match(/\(([^)]+)\)/)||[])[1]||'').replace(/^n[ée]e\s+/i,'').trim();
+  const nick=((raw.match(/[“"]([^”"]+)[”"]/)||[])[1]||'').trim();
+  const words=raw.replace(/\([^)]*\)/g,' ').replace(/[“"][^”"]*[”"]/g,' ').replace(/\b(Mrs?|Ms|Dr|Jr|Sr|II|III)\.?\b/g,' ').trim().split(/\s+/).filter(Boolean);
+  const first=words[0]||'', last=words.length>1?words[words.length-1]:'', middle=words.slice(1,-1).join(' ');
+  // date of death: after "passed away / died / entered rest…", else the first full date in the text
+  const death=new RegExp('(?:passed away|died|entered (?:into )?(?:eternal )?rest|went (?:home )?to be with[^,.]{0,30}|departed this life)[^.]{0,40}?'+MON_RE+'\\s+(\\d{1,2}),?\\s+(\\d{4})','i');
+  const any=new RegExp(MON_RE+'\\s+(\\d{1,2}),?\\s+(\\d{4})','g');
+  let died='', m=t.match(death);
+  if(m) died=fmtDate(m[1],m[2],m[3]);
+  else { const all=[...t.matchAll(any)].filter(x=>+x[3]>=1990); if(all.length){ const x=all.sort((a,b)=>+b[3]-+a[3])[0]; died=fmtDate(x[1],x[2],x[3]); } }
+  const age=(t.match(/,\s*(\d{1,3}),/)||t.match(/\bage(?:d)?\s+(\d{1,3})\b/i)||[])[1];
+  let born='', bm=t.match(new RegExp('(?:was )?born[^.]{0,40}?'+MON_RE+'\\s+(\\d{1,2}),?\\s+(\\d{4})','i'));
+  if(bm) born=fmtDate(bm[1],bm[2],bm[3]); else if(age && died) born=String(+yr(died)-+age);
+  return {first, middle, last, maiden, nickname:nick, died, born, age};
+}
+let QB=null;
+async function readObit(){
+  const text=$('#obitText').value.trim(), hint=$('#obitName').value.trim();
+  if(text.length<40){ toast('Paste the obituary text first.'); return; }
+  const x=parseObit(text, hint);
+  const cands=findCands(x).map(c=>c[1]);
+  // also try a looser search on the name as typed
+  for(const p of search([x.first,x.last].filter(Boolean).join(' ')).list.slice(0,6)) if(!cands.includes(p.id) && cands.length<6) cands.push(p.id);
+  const strong=id=>{ const p=P(id); const mm=norm(x.middle).split(' ')[0], pm=norm(p.middle||'').split(' ')[0];
+    if(mm&&pm&&mm[0]!==pm[0]) return false; const by=yr(x.born), pb=yr(p.born); if(by&&pb&&Math.abs(+by-+pb)>1) return false; return norm(p.last)===norm(x.last)||marriedNames(p).map(norm).includes(norm(x.last)); };
+  QB={x, text, cands, pick:cands.length?(strong(cands[0])?cands[0]:null):'new'};
+  renderQuick();
+  $('#quickBox').scrollIntoView({behavior:'smooth', block:'start'});
+}
+function renderQuick(){
+  const box=$('#quickBox'); if(!QB){ box.innerHTML=''; return; }
+  const {x,cands}=QB, nm=[x.first,x.middle,x.last].filter(Boolean).join(' ')+(x.maiden?` (née ${x.maiden})`:'');
+  const opt=(id)=>{ const p=P(id), lt=life(p), par=parentsOf(id).map(i=>shortName(P(i))).join(' & '), sp=spousesOf(id).map(i=>shortName(P(i))).join(', ');
+    return `<label class="qopt"><input type="radio" name="qpick" value="${id}" ${QB.pick===id?'checked':''}>
+      <span><b>${esc(fullName(p))}</b> ${lt?`<small>${esc(lt)}</small>`:''}<br><small>${par?'Child of '+esc(par):''}${par&&sp?' · ':''}${sp?'Married to '+esc(sp):''}</small>
+      ${p.died?`<br><small class="warn">Already marked as died ${esc(p.died)}</small>`:''}</span></label>`; };
+  box.innerHTML=`<div class="quick">
+    <h3>Who is this obituary for?</h3>
+    <p class="hint" style="margin-top:2px">The obituary looks like it’s for <b>${esc(nm||'(name not found)')}</b>${x.age?`, age ${esc(x.age)}`:''}. Pick the matching person in the tree.</p>
+    ${cands.length?cands.map(opt).join(''):'<p class="hint">No one in the tree matches that name.</p>'}
+    <label class="qopt"><input type="radio" name="qpick" value="new" ${QB.pick==='new'?'checked':''}><span><b>Not in the tree yet</b><br><small>Add ${esc(nm||'them')} as a new person</small></span></label>
+    <div class="two" style="margin-top:12px">
+      <label class="field"><span>Date of death</span><input id="qDied" value="${esc(x.died)}" placeholder="e.g. 10 Nov 2026"></label>
+      <label class="field"><span>Where the obituary came from</span><input id="qSrc" placeholder="e.g. Fox Funeral Home"></label>
+    </div>
+    <div class="qphoto">${QB.photo?`<img src="${esc(QB.photo)}" alt="Obituary photo">`:''}
+      <label class="btn"><input type="file" accept="image/*" id="qPhoto" hidden>${QB.photo?'Change photo':'📷 Add the obituary photo'}</label>
+      ${QB.photo?'<button class="btn" data-act="qnophoto">Remove photo</button>':''}</div>
+    <div class="foot"><button class="btn" data-act="qcancel">Cancel</button><button class="btn gold" data-act="qapprove">Approve</button></div>
+  </div>`;
+}
+document.addEventListener('change',async e=>{ if(e.target.name==='qpick' && QB) QB.pick=e.target.value;
+  if(e.target.id==='qPhoto' && QB && e.target.files[0]){ const keep={died:$('#qDied').value, src:$('#qSrc').value}; QB.photo=await shrinkPhoto(e.target.files[0]); renderQuick(); $('#qDied').value=keep.died; $('#qSrc').value=keep.src; } });
+document.addEventListener('click',e=>{ if(e.target.closest('[data-act="qnophoto"]')&&QB){ QB.photo=''; renderQuick(); } });
+// Make a phone photo small enough to store (about 600px wide).
+function shrinkPhoto(file){ return new Promise((res,rej)=>{ const img=new Image(), url=URL.createObjectURL(file);
+  img.onload=()=>{ const max=640, sc=Math.min(1,max/Math.max(img.width,img.height)), c=document.createElement('canvas'); c.width=Math.round(img.width*sc); c.height=Math.round(img.height*sc);
+    c.getContext('2d').drawImage(img,0,0,c.width,c.height); URL.revokeObjectURL(url); res(c.toDataURL('image/jpeg',0.82)); };
+  img.onerror=()=>{ toast('That file isn’t a picture this page can read.'); rej(); }; img.src=url; }); }
+// On the live site the photo is saved to the family’s Google Drive; in the preview it stays in the record.
+async function savePhoto(data){ if(!data) return ''; if(S.db && S.db.uploadPhoto) return S.db.uploadPhoto(data); return data; }
+document.addEventListener('click',async e=>{ const b=e.target.closest('[data-act="qcancel"],[data-act="qapprove"]'); if(!b||!QB) return;
+  if(b.dataset.act==='qcancel'){ QB=null; renderQuick(); return; }
+  const died=$('#qDied').value.trim(), src=$('#qSrc').value.trim(), {x,text}=QB, photoData=QB.photo||'';
+  if(!QB.pick){ toast('Pick the person this obituary is for, or “Not in the tree yet”.'); return; }
+  if(!died){ toast('Add the date of death first.'); $('#qDied').focus(); return; }
+  let id=QB.pick, name='';
+  const ok=await guarded(async()=>{
+    if(id==='new'){ id=newId(); await putPerson({id, first:x.first, middle:x.middle, last:x.last, maiden:x.maiden, nickname:x.nickname, born:x.born&&x.born.length>4?x.born:'', died, gender:'', parents:[], spouses:[], notes:''}); }
+    else { const p=P(id); const keep={...(S.edits.get(id)||S.base.get(id)||{})}; await putPerson({...keep, id, died}); }
+    name=fullName(P(id)); const photo=await savePhoto(photoData);
+    await S.db.collection('obits').doc(newId()).set(clean({name, died, source:src||('Sent in by '+S.me), added:Date.now(), by:S.me||'', people:[id], deceased:id, photo, text:text.slice(0,20000)}));
+    await S.db.collection('inbox').doc(newId()).set(clean({name, died, text:text.slice(0,20000), source:src||('Sent in by '+S.me), found:Date.now(), status:'added', reviewed:Date.now(), by:S.me||'', people:[id], deceased:id, needsRelatives:true}));
+  });
+  if(ok){ QB=null; renderQuick(); $('#obitText').value=''; $('#obitName').value=''; toast(`Approved: ${name}`); renderObitHistory(); renderInbox(); select(id); }
+});function obitBlock(id){
+  const list=(S.obits||[]).filter(o=>o.deceased===id);
+  if(!list.length) return '';
+  return list.map(o=>`<details class="obitcard" open><summary>Obituary${o.died?` · died ${esc(o.died)}`:''}</summary>
+    <div class="obitmeta">${o.source?esc(o.source)+' · ':''}Approved by <b>${esc(who(o.by))}</b> on ${new Date(o.added).toLocaleDateString()}</div>
+    <div class="obitbody">${o.photo?`<img class="obitphoto" src="${esc(o.photo)}" alt="${esc(o.name||'')}">`:''}${o.text?`<div class="obittext">${esc(o.text)}</div>`:''}</div></details>`).join('');
+}
+
+function portrait(id){ const o=(S.obits||[]).find(o=>o.deceased===id && o.photo); return o?`<img class="portrait" src="${esc(o.photo)}" alt="${esc(fullName(P(id)))}">`:''; }
+
+function personLike(x){ return {first:x.first||'', middle:x.middle||'', last:x.last||'', maiden:x.maiden||'', nickname:x.nickname||'', gender:x.gender==='M'||x.gender==='F'?x.gender:'', born:x.born||'', died:x.died||'', birthplace:x.birthplace||''}; }
+const NICK=[['fred','fritz','friedrich','frederick','frederich','fredrich','friederich','frederic'],['henry','heinrich','hinrich','heinz','hank'],['john','johann','johannes','hans','jack'],['bill','will','willie','wilhelm','william','willy'],
+  ['william','wilhelm'],['charles','carl','karl','charlie'],['louis','ludwig','lewis','lou'],['george','georg'],['august','augustus','gus'],['herman','hermann'],['ernest','ernst','emest'],['minnie','wilhelmina','wilhelmine'],
+  ['lena','caroline','carolina','karoline'],['kate','katie','katherine','katharina','catherine','cathrina','kathrina'],['mary','maria','marie'],['anna','anne','annie'],['dora','dorothea','dorothee'],['lizzie','elizabeth','elisabeth','elise'],['sophie','sophia'],['peggy','margaret','margaretha','margarethe','maggie'],['christopher','christoph','chris'],['conrad','konrad'],['dick','richard'],['bob','robert'],['jim','james'],['tom','thomas'],['ed','edward','eduard']];
+function sameName(a,b){ if(!a||!b) return false; if(a===b) return true; return NICK.some(g=>g.includes(a)&&g.includes(b)); }
+function candScore(p,x){
+  let sc=0; const f=norm(x.first), l=norm(x.last), m=norm(x.maiden);
+  const given=[norm(p.first),...norm(p.middle||'').split(' '),norm(p.nickname||'')].filter(Boolean);
+  if(norm(p.first)===f) sc+=3; else if(f && given.includes(f)) sc+=2; else if(f && given.some(g=>sameName(g,f))) sc+=2; else if(f && norm(p.first).slice(0,3)===f.slice(0,3)) sc+=1; else return 0;
+  if(x.middle){ const mm=norm(x.middle).split(' ')[0]; if(given.some(g=>sameName(g,mm))) sc+=1; }
+  const ln=norm(p.last), mn=marriedNames(p).map(norm);
+  if(l && (ln===l || mn.includes(l))) sc+=3; if(m && ln===m) sc+=3; if(!l && !m) sc+=0; else if(sc<4) return 0;
+  const yb=yr(x.born), yp=yr(p.born); if(yb&&yp) sc += Math.abs(+yb-+yp)<=1 ? 3 : -4;
+  if(x.gender && p.gender && x.gender!==p.gender) sc-=4;
+  return sc;
+}
+function findCands(x, near){
+  const out=[];
+  for(const id of near||[]){ const p=P(id); if(!p) continue; const sc=candScore(p,x); if(sc>=3) out.push([sc+4,id]); }
+  const firsts=[x.first, ...(NICK.find(g=>g.includes(norm(x.first)))||[])].filter(Boolean);
+  for(const fn of [...new Set(firsts)].slice(0,8)){ const q=[fn,x.last].filter(Boolean).join(' ');
+    for(const p of search(q,{noFuzzy:true}).list.slice(0,40)){ const sc=candScore(p,x); if(sc>=5 && !out.some(o=>o[1]===p.id)) out.push([sc,p.id]); } }
+  const q=[x.first,x.last].filter(Boolean).join(' ');
+  if(q){ for(const p of search(q,{noFuzzy:true}).list.slice(0,40)){ const sc=candScore(p,x); if(sc>=5 && !out.some(o=>o[1]===p.id)) out.push([sc,p.id]); } }
+  if(x.maiden){ for(const p of search(x.first+' '+x.maiden,{noFuzzy:true}).list.slice(0,20)){ const sc=candScore(p,x); if(sc>=5 && !out.some(o=>o[1]===p.id)) out.push([sc,p.id]); } }
+  return out.sort((a,b)=>b[0]-a[0]).slice(0,5);
+}
+function buildObitRows(){
+  const d=OB.data, rows=[];
+  const dec={ref:'deceased', ...personLike(d.deceased), relation:'deceased', of:''};
+  dec.cands=findCands(dec,[]); dec.choice = dec.cands.length && dec.cands[0][0]>=8 ? dec.cands[0][1] : (dec.cands[0]?dec.cands[0][1]:'new');
+  rows.push(dec);
+  const decId = dec.choice!=='new'&&dec.choice!=='skip' ? dec.choice : null;
+  const fam = decId ? [...parentsOf(decId), ...spousesOf(decId), ...childrenOf(decId), ...siblingsOf(decId).keys(), ...childrenOf(decId).flatMap(c=>[...childrenOf(c),...spousesOf(c)])] : [];
+  for(const x of (d.people||[])){
+    const r={ref:x.ref||('p'+rows.length), ...personLike(x), relation:RELS[x.relation]?x.relation:'other', of:x.of||'deceased', isDead:!!x.deceased, residence:x.residence||''};
+    r.cands=findCands(r,fam); r.choice = r.cands.length && r.cands[0][0]>=8 ? r.cands[0][1] : 'new';
+    rows.push(r);
+  }
+  OB.rows=rows;
+}
+function rowName(r){ return [r.first,r.middle,r.last].filter(Boolean).join(' ')+(r.maiden?` (née ${r.maiden})`:''); }
+function renderObitReview(){
+  const rows=OB.rows, d=OB.data;
+  const ofName = ref => ref==='deceased' ? 'the deceased' : (rows.find(r=>r.ref===ref)? rowName(rows.find(r=>r.ref===ref)) : '');
+  let h=`<div class="obitsum"><b>${esc(rowName(rows[0]))}</b>${rows[0].died?` · died ${esc(rows[0].died)}`:''}${d.source?` · ${esc(d.source)}`:''}<br><span class="hint">${esc(d.summary||'')}</span></div>
+  <table class="obittab"><thead><tr><th>Person in the obituary</th><th>Relationship</th><th>In the tree</th></tr></thead><tbody>`;
+  rows.forEach((r,i)=>{
+    const opts=[`<option value="new"${r.choice==='new'?' selected':''}>➕ Add as a new person</option>`, ...r.cands.map(([sc,id])=>`<option value="${id}"${r.choice===id?' selected':''}>✔ ${esc(fullName(P(id)))}${life(P(id))?' ('+esc(life(P(id)))+')':''}${(P(id).refs||[]).length?' · '+esc(P(id).refs.map(x=>x.join(' #')).join(', ')):''}</option>`), `<option value="skip"${r.choice==='skip'?' selected':''}>✖ Don’t add</option>`].join('');
+    h+=`<tr><td><b>${esc(rowName(r))}</b>${r.born||r.died?`<br><small>${r.born?'b. '+esc(r.born):''} ${r.died?'d. '+esc(r.died):''}</small>`:''}${r.isDead?'<br><small>preceded in death</small>':''}${r.residence?`<br><small>${esc(r.residence)}</small>`:''}</td>
+      <td>${i===0?'<b>The deceased</b>':esc(RELS[r.relation])+(r.of&&r.of!=='deceased'?` <small>of ${esc(ofName(r.of))}</small>`:'')}</td>
+      <td><select data-obrow="${i}">${opts}</select></td></tr>`;
+  });
+  h+=`</tbody></table><div class="foot"><button class="btn" data-act="obitcancel">Cancel</button><button class="btn primary" data-act="obitsave">Add to the family tree</button></div>`;
+  $('#obitReview').innerHTML=h;
+}
+async function saveObit(){
+  const rows=OB.rows, d=OB.data; const idOf={};
+  const decName=rowName(rows[0]);
+  const note=`From the obituary of ${decName}${rows[0].died?' (died '+rows[0].died+')':''}${d.source?', '+d.source:''}.`;
+  const ok=await guarded(async()=>{
+    // 1. create or update people
+    for(const r of rows){
+      if(r.choice==='skip') continue;
+      const base=personLike(r);
+      if(r.choice==='new'){
+        const id=newId(); idOf[r.ref]=id;
+        const rel = r.ref==='deceased' ? '' : ` Listed as ${RELS[r.relation].toLowerCase()} of ${r.of&&r.of!=='deceased'&&rows.find(x=>x.ref===r.of) ? rowName(rows.find(x=>x.ref===r.of))+' (in the obituary of '+decName+')' : decName}.`;
+        const p={id, ...base, parents:[], spouses:[], notes: note+rel+(r.isDead?' Preceded in death.':'')+(r.residence?' Residence: '+r.residence+'.':'')};
+        if(r.ref==='deceased'){ p.died=base.died; p.notes=note+'\n\n'+OB.text.slice(0,4000); }
+        S.people.set(id,p);
+      } else {
+        idOf[r.ref]=r.choice; const p={...P(r.choice)};
+        for(const k of ['born','died','birthplace','maiden','nickname','middle']) if(base[k] && !p[k]) p[k]=base[k];
+        if(r.ref==='deceased' && !(p.notes||'').includes('From the obituary')) p.notes=((p.notes||'')+'\n\n'+note+'\n\n'+OB.text.slice(0,4000)).trim();
+        S.people.set(p.id,p);
+      }
+    }
+    // 2. relationships
+    const D=idOf.deceased; const link=(a,b)=>{ const A=P(a),B=P(b); if(!A||!B) return; A.spouses=[...new Set([...(A.spouses||[]),b])]; B.spouses=[...new Set([...(B.spouses||[]),a])]; };
+    const addParent=(c,p)=>{ const C=P(c); if(C&&p&&!(C.parents||[]).includes(p)&&(C.parents||[]).length<2) C.parents=[...(C.parents||[]),p]; };
+    const decSp = () => rows.filter(r=>r.relation==='spouse'&&idOf[r.ref]).map(r=>idOf[r.ref]);
+    for(const r of rows){
+      const me=idOf[r.ref]; if(!me||r.ref==='deceased'||!D) continue;
+      const ofId = r.of&&r.of!=='deceased' ? idOf[r.of] : null;
+      if(r.relation==='parent') addParent(D,me);
+      else if(r.relation==='spouse') link(D,me);
+      else if(r.relation==='child'){ addParent(me,D); const sp=decSp(); if(sp.length===1) addParent(me,sp[0]); else if(!sp.length){ const ex=spousesOf(D); if(ex.length===1) addParent(me,ex[0]); } }
+      else if(r.relation==='sibling'){ const pp=parentsOf(D).length?P(D).parents:[]; for(const x of pp) addParent(me,x); }
+      else if(r.relation==='grandchild'||r.relation==='great-grandchild'){ if(ofId) addParent(me,ofId); }
+      else if(r.relation==='child-in-law'||r.relation==='grandchild-in-law'){ if(ofId) link(me,ofId); }
+    }
+    // 3. save every touched person
+    const touched=new Set(Object.values(idOf));
+    for(const id of [...touched]){ for(const s of (P(id).spouses||[])) touched.add(s); }
+    for(const id of touched){ const p=P(id); if(p) await putPerson(p); }
+    if(S.db){ await S.db.collection('obits').doc(newId()).set(clean({name:decName, died:rows[0].died||'', source:d.source||'', added:Date.now(), by:S.me||'', people:[...new Set(Object.values(idOf))], deceased:D||null, photo:await savePhoto(((S.inbox||[]).find(i=>i.id===S.inboxCurrent)||{}).photo||''), text:OB.text.slice(0,20000)})); }
+  });
+  if(ok && S.inboxCurrent && S.db){ try{ await S.db.doc('inbox/'+S.inboxCurrent).update({status:'added', reviewed:Date.now(), by:S.me||'', people:[...new Set(Object.values(idOf))]}); }catch(_){} S.inboxCurrent=null; }
+  if(ok){ const n=Object.keys(idOf).length; toast(`Added ${n} ${n===1?'person':'people'} from the obituary`); const D=idOf.deceased; OB=null; $('#obitReview').innerHTML=''; $('#obitText').value=''; $('#obitFile').value=''; $('#obitFileName').textContent=''; if(D) select(D); }
+}
+function who(by){ return by || 'Someone'; }
+function renderObitHistory(){
+  const el=$('#obitHistory'); const list=S.obits||[];
+  el.innerHTML = list.length ? list.map(o=>`<div class="row" style="cursor:default"><span>${o.deceased&&P(o.deceased)?`<a href="#" data-go="${o.deceased}">${esc(o.name)}</a>`:esc(o.name)}${o.died?` <small>d. ${esc(o.died)}</small>`:''}${o.source?` <small>· ${esc(o.source)}</small>`:''}</span><small>${(o.people||[]).length===1?'1 person':(o.people||[]).length+' people'} · approved by ${esc(who(o.by))} ${new Date(o.added).toLocaleDateString()}</small></div>`).join('') : 'None yet.';
+}
+
+/* ---------- obituary inbox (filled daily by Claude) ---------- */
+let NAMESET=null;
+function nameSet(){
+  if(NAMESET) return NAMESET;
+  NAMESET=new Map();
+  for(const p of S.people.values()){
+    const firsts=[p.first,p.nickname,(p.middle||'').split(' ')[0]].filter(Boolean).map(norm);
+    const lasts=[p.last,...marriedNames(p)].filter(Boolean).map(norm);
+    for(const f of firsts) for(const l of lasts){ if(f.length<2||l.length<2) continue; const k=f+' '+l; if(!NAMESET.has(k)) NAMESET.set(k,[]); NAMESET.get(k).push(p.id); }
+  }
+  return NAMESET;
+}
+function inboxScore(it){
+  if(it._score!==undefined) return it._score;
+  const ns=nameSet(); const words=norm(it.text||'').split(' ');
+  const hits=new Map();
+  for(let i=0;i<words.length-1;i++){
+    for(const k of [words[i]+' '+words[i+1], words[i]+' '+(words[i+2]||'')]){ if(ns.has(k)) hits.set(k,(hits.get(k)||0)+1); }
+  }
+  const nm=norm(it.name||'').split(' ').filter(w=>w.length>1);
+  const dkey = nm.length>=2 ? nm[0]+' '+nm[nm.length-1] : '';
+  const dec = dkey && ns.has(dkey) ? ns.get(dkey) : null;
+  it._hits=[...hits.keys()]; it._dec=dec;
+  it._score = (dec?5:0) + Math.min(hits.size,10);
+  return it._score;
+}
+function renderInbox(){
+  const box=$('#inboxBox'); if(!S.inbox){ box.classList.add('hidden'); return; }
+  const items=S.inbox.filter(i=>(i.status||'new')==='new');
+  box.classList.remove('hidden');
+  items.forEach(inboxScore);
+  const likely=items.filter(i=>i._score>=3).sort((a,b)=>b._score-a._score||(b.found||0)-(a.found||0));
+  const other=items.filter(i=>i._score<3).sort((a,b)=>(b.found||0)-(a.found||0));
+  const shown = S.inboxAll ? [...likely,...other] : likely;
+  const row=i=>`<div class="ibrow"><div>${i.photo?`<img class="ibthumb" src="${esc(i.photo)}" alt="">`:''}<b>${esc(i.name||'(no name)')}</b>${i.died?` <small>d. ${esc(i.died)}</small>`:''}<br><small>${esc(i.source||'')}${i.url?` · <a href="${esc(i.url)}" target="_blank" rel="noopener">original</a>`:''}</small>
+      ${i._score>=3?`<br><span class="ibtag">${i._dec?'Name matches someone in the tree':'Mentions '+i._hits.length+' people in the tree'}</span> <small>${esc(i._hits.slice(0,4).join(', '))}</small>`:''}</div>
+      <div class="ibbtns"><button class="btn primary" data-inbox="${esc(i.id)}" data-iact="review">Review &amp; approve</button><button class="btn" data-inbox="${esc(i.id)}" data-iact="dismiss">Not family</button></div></div>`;
+  box.innerHTML=`<h3>New obituaries <small class="hint">Found every morning at 8:30 from Kidwell-Garber, Fox, Scrivner-Page-Dady, Reser &amp; Davis-Miller and Legacy.com. Anyone in the family can approve one.</small></h3>
+    <div class="hint">${likely.length} likely family · ${other.length} other${items.length?'':' · nothing waiting right now'}</div>
+    ${shown.map(row).join('') || (items.length?'<div class="hint" style="margin:8px 0">No likely family matches right now.</div>':'')}
+    ${other.length?`<button class="btn" data-iact="toggleall" style="margin-top:8px">${S.inboxAll?'Show only likely family':'Show all '+items.length}</button>`:''}
+    ${(()=>{ const done=S.inbox.filter(i=>i.status&&i.status!=='new').sort((a,b)=>(b.reviewed||0)-(a.reviewed||0)).slice(0,30); if(!done.length) return '';
+      return `<h4 style="margin-top:16px">Recently reviewed</h4>`+done.map(i=>`<div class="ibrow"><div><b>${esc(i.name||'(no name)')}</b>${i.died?` <small>d. ${esc(i.died)}</small>`:''}<br><small>${i.status==='added'?'<span class="approved">Approved</span> and added to the tree':'Marked not family'} by <b>${esc(who(i.by))}</b>${i.reviewed?' · '+new Date(i.reviewed).toLocaleDateString():''}</small></div><div class="ibbtns">${i.status==='dismissed'?`<button class="btn" data-inbox="${esc(i.id)}" data-iact="restore">Put back</button>`:''}</div></div>`).join(''); })()}`;
+}
+async function inboxAction(id,act){
+  const it=(S.inbox||[]).find(x=>x.id===id); if(!it) return;
+  if(act==='review'){
+    if(!it.data||!it.data.deceased){ toast('This one hasn’t been read yet. It will be ready by tomorrow morning.'); return; }
+    S.inboxCurrent=id; OB={text:it.text||'', data:it.data, file:''}; buildObitRows(); renderObitReview();
+    $('#obitReview').scrollIntoView({behavior:'smooth',block:'start'});
+  } else if(act==='restore'){
+    await guarded(async()=>{ await S.db.doc('inbox/'+id).update({status:'new', reviewed:Date.now(), by:S.me||''}); });
+  } else if(act==='dismiss'){
+    await guarded(async()=>{ await S.db.doc('inbox/'+id).update({status:'dismissed', reviewed:Date.now(), by:S.me||''}); });
+    it.status='dismissed'; renderInbox();
+  }
+}
+
+/* ---------- storage ---------- */
+const clean = o => JSON.parse(JSON.stringify(o));
+function deriveGens(p){
+  if((p.gens||[]).length) return p.gens;
+  const g=new Map();
+  for(const par of (p.parents||[])){ const q=P(par); for(const [b,n,f] of (q&&q.gens)||[]) if(!f && !g.has(b)) g.set(b,[b,n+1]); }
+  if(!g.size) for(const s of (p.spouses||[])){ const q=P(s); for(const [b,n] of (q&&q.gens)||[]) if(!g.has(b)) g.set(b,[b,n,1]); }
+  return [...g.values()];
+}
+async function logChange(pid, action, before, after){
+  if(!S.db) return;
+  try{ await S.db.collection('history').doc(newId()).set(clean({pid, action, name: fullName(after&&!after.deleted?after:(before||P(pid)||{})), before: before?JSON.stringify(before):'', at:Date.now(), by:S.me||''})); }catch(_){}
+}
+async function putPerson(p){
+  p={...p}; const dg=deriveGens(p); if(dg.length) p.gens=dg;
+  const body=clean({...p, updated:Date.now(), by:S.me||''}); delete body.id;
+  const before=S.edits.get(p.id)||null, existed=S.people.has(p.id);
+  if(S.col){ await S.col.doc(p.id).set(body); await logChange(p.id, existed?'changed':'added', before, body); }
+  S.edits.set(p.id,{...body}); S.people.set(p.id,{...body,id:p.id});
+}
+async function removePerson(id){
+  const before=S.edits.get(id)||null, old=P(id);
+  if(S.col){ await S.col.doc(id).set({deleted:true, updated:Date.now(), by:S.me||''}); await logChange(id,'removed',before,{...old,deleted:true}); }
+  S.edits.set(id,{deleted:true}); S.people.delete(id);
+}
+async function guarded(fn){
+  if(!(await ensureMe())) return false;
+  if(S.readOnly){ toast('You have view-only access to this tree.'); return false; }
+  try{ await fn(); rebuild(); renderAll(); return true; }
+  catch(e){
+    if(e && e.code==='invalid_argument'){ S.readOnly=true; toast('You have view-only access to this tree.'); }
+    else if(e && e.code==='quota_exceeded') toast('The tree is full — remove some people first.');
+    else toast('Couldn’t save — please try again.');
+    rebuild(); renderAll(); return false;
+  }
+}
+
+/* ---------- add / edit form ---------- */
+let F=null; // {id, lists:{parents,spouses,children}}
+function openForm(id, preset={}){
+  const p = id ? P(id) : (preset.person||{});
+  F = { id, lists:{
+    parents:[...(id?parentsOf(id):preset.parents||[])],
+    spouses:[...(id?spousesOf(id):preset.spouses||[])],
+    children:[...(id?childrenOf(id):preset.children||[])] } };
+  const v=k=>esc(p[k]||'');
+  $('#modal').innerHTML = `<form class="sheet" id="pform">
+    <h2>${id?'Edit '+esc(fullName(p)):'Add a person'}</h2>
+    <div class="three">
+      <label class="field"><span>First name</span><input name="first" value="${v('first')}" autocomplete="off"></label>
+      <label class="field"><span>Middle name</span><input name="middle" value="${v('middle')}" autocomplete="off"></label>
+      <label class="field"><span>Last name</span><input name="last" value="${v('last')}" autocomplete="off"></label>
+    </div>
+    <div class="three">
+      <label class="field"><span>Maiden / birth name</span><input name="maiden" value="${v('maiden')}" autocomplete="off"></label>
+      <label class="field"><span>Nickname</span><input name="nickname" value="${v('nickname')}" autocomplete="off"></label>
+      <label class="field"><span>Gender</span><select name="gender">
+        <option value="">—</option><option value="F" ${p.gender==='F'?'selected':''}>Female</option><option value="M" ${p.gender==='M'?'selected':''}>Male</option></select></label>
+    </div>
+    <div class="three">
+      <label class="field"><span>Born</span><input name="born" value="${v('born')}" placeholder="e.g. 4 May 1952"></label>
+      <label class="field"><span>Died</span><input name="died" value="${v('died')}" placeholder="leave blank if living"></label>
+      <label class="field"><span>Birthplace</span><input name="birthplace" value="${v('birthplace')}"></label>
+    </div>
+    <label class="field"><span>Notes</span><textarea name="notes" rows="2">${v('notes')}</textarea></label>
+    <div class="relbox">
+      ${['parents','spouses','children'].map(k=>`
+      <div class="field"><span>${{parents:'Parents',spouses:'Spouse(s)',children:'Children'}[k]}</span>
+        <div class="chips" id="ch-${k}"></div>
+        <div class="pick"><input id="pk-${k}" placeholder="Search to add ${k==='children'?'a child':k==='parents'?'a parent':'a spouse'}…" autocomplete="off"></div>
+      </div>`).join('')}
+      <div class="hint">Only people already in the tree can be linked. Add someone new first, then link them — or use the ＋ buttons on a person’s page.</div>
+    </div>
+    <div class="foot"><button type="button" class="btn" data-act="cancel">Cancel</button><button class="btn primary" type="submit">Save</button></div>
+  </form>`;
+  $('#modal').classList.remove('hidden');
+  for(const k of ['parents','spouses','children']){
+    renderFormChips(k);
+    makePicker($('#pk-'+k),{ exclude:()=>[F.id,...F.lists.parents,...F.lists.spouses,...F.lists.children].filter(Boolean),
+      onPick:pid=>{ F.lists[k].push(pid); $('#pk-'+k).value=''; renderFormChips(k); } });
+  }
+  $('#pform').addEventListener('submit',saveForm);
+  setTimeout(()=>$('#pform [name=first]').focus(),30);
+}
+function renderFormChips(k){
+  $('#ch-'+k).innerHTML = F.lists[k].map(pid=>`<span class="chip x">${esc(fullName(P(pid)))}<span class="rm" data-rm="${k}:${pid}">×</span></span>`).join('');
+}
+function closeForm(){ $('#modal').classList.add('hidden'); $('#modal').innerHTML=''; F=null; }
+async function saveForm(e){
+  e.preventDefault();
+  const fd=new FormData(e.target), val=k=>String(fd.get(k)||'').trim();
+  if(!val('first') && !val('last')){ toast('Please enter a name.'); return; }
+  const isNew=!F.id, id=F.id||newId(), old=P(id)||{};
+  const p={...old, id, first:val('first'), middle:val('middle'), last:val('last'), maiden:val('maiden'), nickname:val('nickname'),
+    gender:val('gender'), born:val('born'), died:val('died'), birthplace:val('birthplace'), notes:val('notes'),
+    parents:[...F.lists.parents], spouses:[...F.lists.spouses]};
+  const oldSp=new Set(isNew?[]:spousesOf(id)), newSp=new Set(p.spouses);
+  const oldCh=new Set(isNew?[]:childrenOf(id)), newCh=new Set(F.lists.children);
+  const ok = await guarded(async()=>{
+    await putPerson(p);
+    for(const s of newSp){ const q=P(s); if(q && !(q.spouses||[]).includes(id)) await putPerson({...q, spouses:[...(q.spouses||[]), id]}); }
+    for(const s of oldSp) if(!newSp.has(s)){ const q=P(s); if(q && (q.spouses||[]).includes(id)) await putPerson({...q, spouses:q.spouses.filter(x=>x!==id)}); }
+    for(const c of newCh) if(!oldCh.has(c)){ const q=P(c); if(q) await putPerson({...q, parents:[...new Set([...(q.parents||[]), id])]}); }
+    for(const c of oldCh) if(!newCh.has(c)){ const q=P(c); if(q) await putPerson({...q, parents:(q.parents||[]).filter(x=>x!==id)}); }
+  });
+  if(ok){ closeForm(); toast(isNew?'Added '+fullName(p):'Saved'); select(id); }
+}
+
+/* ---------- delete dialog ---------- */
+function confirmDelete(id){
+  $('#modal').innerHTML = `<div class="sheet"><h2>Delete ${esc(fullName(P(id)))}?</h2>
+    <p>This removes them from the tree and unlinks them from their family. It can’t be undone.</p>
+    <div class="foot"><button class="btn" data-act="cancel">Cancel</button><button class="btn primary" data-act="confirmDelete" data-id="${id}" style="background:var(--rust);border-color:var(--rust)">Delete</button></div></div>`;
+  $('#modal').classList.remove('hidden');
+}
+async function doDelete(id){
+  const name=fullName(P(id));
+  const ok=await guarded(async()=>{
+    await removePerson(id);
+    for(const q of [...S.people.values()]) if((q.parents||[]).includes(id)||(q.spouses||[]).includes(id))
+      await putPerson({...q, parents:(q.parents||[]).filter(x=>x!==id), spouses:(q.spouses||[]).filter(x=>x!==id)});
+  });
+  closeForm(); if(ok){ if(S.selected===id) S.selected=null; renderAll(); toast('Deleted '+name); }
+}
+
+/* ---------- events ---------- */
+document.addEventListener('click',async e=>{
+  const go=e.target.closest('[data-go]'); if(go){ e.preventDefault(); if(F) return; if(!$('#modal').classList.contains('hidden')) closeForm(); select(go.dataset.go); return; }
+  const tab=e.target.closest('[data-tab]'); if(tab){ setTab(tab.dataset.tab); return; }
+  const ib=e.target.closest('[data-iact]'); if(ib){ if(ib.dataset.iact==='toggleall'){ S.inboxAll=!S.inboxAll; renderInbox(); } else inboxAction(ib.dataset.inbox, ib.dataset.iact); return; }
+  const pic=e.target.closest('[data-pic]'); if(pic){ openPic(pic.dataset.pic); return; }
+  const sc=e.target.closest('[data-scan]'); if(sc){ openScan(sc.dataset.scan, sc.dataset.for||null); return; }
+  const vw=e.target.closest('[data-view]'); if(vw){ S.bview=vw.dataset.view; $('#bookq').value=''; renderBook(); return; }
+  const ct=e.target.closest('[data-cat]'); if(ct){ S.cat=ct.dataset.cat; renderBook(); return; }
+  const bk=e.target.closest('[data-book]'); if(bk){ S.book=bk.dataset.book; S.bookShown=400; $('#bookq').value=''; renderBook(); $('#booklist').scrollTop=0; return; }
+  const rm=e.target.closest('[data-rm]'); if(rm){ const [k,pid]=rm.dataset.rm.split(':'); F.lists[k]=F.lists[k].filter(x=>x!==pid); renderFormChips(k); return; }
+  const act=e.target.closest('[data-act]'); if(!act) return;
+  const id=S.selected, p=P(id), a=act.dataset.act;
+  if(a==='new') openForm(null);
+  else if(a==='cancel') closeForm();
+  else if(a==='edit') openForm(id);
+  else if(a==='addChild'){ const sp=spousesOf(id); openForm(null,{parents:[id,...(sp.length===1?sp:[])], person:{last:p.last}}); }
+  else if(a==='addParent') openForm(null,{children:[id], person:{last:p.last}});
+  else if(a==='addSpouse') openForm(null,{spouses:[id]});
+  else if(a==='addSibling') openForm(null,{parents:parentsOf(id), person:{last:p.last}});
+  else if(a==='home'){ setHome(id); toast(`Relationships now shown to ${shortName(p)}`); }
+  else if(a==='unhome'){ setHome(null); toast('General view: no relationships shown'); }
+  else if(a==='compare'){ setRel($('#relB'),id); setRel($('#relA'),S.home!==id?S.home:null); setTab('relate'); if(!$('#relA').dataset.id) $('#relA').focus(); }
+  else if(a==='delete') confirmDelete(id);
+  else if(a==='more'){ S.shown+=300; renderResults(); }
+  else if(a==='readobit'){ readObit(); }
+  else if(a==='obitcancel'){ OB=null; $('#obitReview').innerHTML=''; S.inboxCurrent=null; }
+  else if(a==='obitsave'){ saveObit(); }
+  else if(a==='bookmore'){ S.bookShown=(S.bookShown||400)+400; renderBook(); }
+  else if(a==='confirmDelete') doDelete(act.dataset.id);
+  else if(a==='copy'){ const t=$('#exportBox'); try{ await navigator.clipboard.writeText(t.value); toast('Copied'); }catch(_){ t.select(); toast('Press Ctrl+C (⌘C) to copy'); } }
+  else if(a==='import'){
+    let arr; try{ arr=JSON.parse($('#importBox').value); if(arr && arr.people) arr=arr.people; if(!Array.isArray(arr)) throw 0; }catch(_){ toast('That doesn’t look like a backup from this page.'); return; }
+    const okIds=/^[A-Za-z0-9_\-.~:@+]{1,100}$/;
+    const ok=await guarded(async()=>{ for(const o of arr){ if(!o||typeof o!=='object') continue; const pid=okIds.test(o.id||'')?o.id:newId();
+      if(o.deleted){ await removePerson(pid); continue; }
+      await putPerson({first:'',last:'',parents:[],spouses:[],...o,id:pid}); } });
+    if(ok){ $('#importBox').value=''; toast(`Imported ${arr.length} people`); }
+  }
+});
+document.addEventListener('toggle',e=>{ const d=e.target; if(!d.classList||!d.classList.contains('explainbox')||!d.open) return;
+  const box=d.querySelector('[data-explain]'); if(box && !box.innerHTML){ const r=relate(S.home,box.dataset.explain); box.innerHTML=(pathHTML(r.path)||'')+explain(S.home,box.dataset.explain); } },true);
+$('#modal').addEventListener('mousedown',e=>{ if(e.target.id==='modal') closeForm(); });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape' && !$('#modal').classList.contains('hidden')) closeForm(); });
+let qT; $('#q').addEventListener('input',()=>{ S.shown=300; clearTimeout(qT); qT=setTimeout(renderResults,150); });
+document.addEventListener('change',e=>{ const sel=e.target.closest('[data-obrow]'); if(sel&&OB){ OB.rows[+sel.dataset.obrow].choice=sel.value; } });
+let bT; $('#bookq').addEventListener('input',()=>{ S.bookShown=400; clearTimeout(bT); bT=setTimeout(renderBook,200); });
+$('#q').addEventListener('keydown',e=>{ if(e.key==='Enter'){ const r=search($('#q').value).list; if(r[0]) select(r[0].id); } });
+
+/* ---------- boot ---------- */
+renderAll();
+(async()=>{
+  try{
+    await passwordGate(); const arr=await loadJSON('people.json');
+    S.base=new Map(arr.map(p=>[p.id,p]));
+  }catch(e){ const b=$('#banner'); b.textContent='Couldn’t load the family records. Try reopening the page.'; b.classList.remove('hidden'); }
+  rebuild(); S.loaded=true; renderAll();
+  loadJSON('gallery.json').then(g=>{ S.gallery=g; if(S.tab==='books') renderBook(); }).catch(()=>{ S.gallery=[]; });
+  const db=makeDB(CONFIG);
+  S.col=db.collection('edits'); S.db=db; S.isOwner=true; renderMeLine();
+  if(!db.remote){ const b=$('#banner'); b.innerHTML='<b>Preview.</b> This is a look at the new website. Changes you make here are only saved on this device.'; b.classList.remove('hidden'); }
+  db.collection('history').orderBy('at','desc').limit(300).onSnapshot(snap=>{ S.history=snap.docs.map(d=>({...d.data(),id:d.id})); if(S.tab==='backup') renderHistory(); }, ()=>{});
+  db.collection('inbox').onSnapshot(snap=>{ S.inbox=snap.docs.map(d=>({...d.data(),id:d.id})); if(S.tab==='obit') renderInbox(); const n=S.inbox.filter(i=>(i.status||'new')==='new').length; const tb=document.querySelector('nav [data-tab="obit"]'); if(tb) tb.innerHTML = 'Obituaries'+(n?`<span class="badge">${n}</span>`:''); }, ()=>{});
+  db.collection('obits').onSnapshot(snap=>{ S.obits=snap.docs.map(d=>({...d.data(),id:d.id})).sort((a,b)=>b.added-a.added); if(S.tab==='obit') renderObitHistory(); if(S.selected) renderProfile(); }, ()=>{});
+  const timer=setTimeout(()=>{ const b=$('#banner'); b.textContent='Still trying to reach your saved changes… what you see may be out of date.'; b.classList.remove('hidden'); },10000);
+  S.col.onSnapshot(snap=>{
+    if(!snap.metadata.fromCache){ clearTimeout(timer); $('#banner').classList.add('hidden'); }
+    S.edits=new Map(snap.docs.map(d=>[d.id,d.data()]));
+    rebuild(); renderAll();
+    if(F) for(const k of ['parents','spouses','children']) if($('#ch-'+k)) renderFormChips(k);
+  }, err=>{
+    clearTimeout(timer);
+    const b=$('#banner'); b.textContent='Couldn’t reach the family’s saved changes right now. Check your internet connection and reopen the page.'; b.classList.remove('hidden');
+  });
+})();
+</script>
+</body>
+</html>

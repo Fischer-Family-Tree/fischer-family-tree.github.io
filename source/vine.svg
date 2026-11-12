@@ -1,0 +1,27 @@
+<svg class="vine" viewBox="0 0 460 300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <g id="tulip">
+      <path d="M0,0 C-16,-8 -20,-34 -11,-50 C-6,-38 -3,-32 0,-30 C3,-32 6,-38 11,-50 C20,-34 16,-8 0,0 Z" fill="#8A3550" stroke="#E7C76A" stroke-width="2"/>
+      <path d="M0,-6 C-7,-20 -6,-40 0,-56 C6,-40 7,-20 0,-6 Z" fill="#C99A2C" stroke="#E7C76A" stroke-width="2"/>
+      <path d="M-5,-22 L5,-22 M-4,-30 L4,-30" stroke="#173A2C" stroke-width="1.5"/>
+    </g>
+    <g id="leaf"><path d="M0,0 C10,-6 26,-6 36,0 C26,6 10,6 0,0 Z" fill="#3E7A5A" stroke="#E7C76A" stroke-width="1.5"/><path d="M2,0 L32,0" stroke="#E7C76A" stroke-width="1"/></g>
+    <g id="heart"><path d="M0,10 C-14,0 -14,-12 -6,-12 C-2,-12 0,-8 0,-6 C0,-8 2,-12 6,-12 C14,-12 14,0 0,10 Z" fill="#C99A2C" stroke="#E7C76A" stroke-width="1.5"/></g>
+  </defs>
+  <g fill="none" stroke="#E7C76A" stroke-width="3" stroke-linecap="round">
+    <path d="M420,310 C400,240 330,230 300,190 C270,150 300,110 270,70"/>
+    <path d="M300,190 C250,200 210,170 190,130"/>
+    <path d="M330,228 C360,200 380,160 372,118"/>
+    <path d="M285,140 C255,130 238,110 232,88" stroke-width="2"/>
+  </g>
+  <use href="#tulip" transform="translate(270,72)"/>
+  <use href="#tulip" transform="translate(190,132) rotate(-28) scale(.9)"/>
+  <use href="#tulip" transform="translate(372,120) rotate(14) scale(.95)"/>
+  <use href="#leaf" transform="translate(300,190) rotate(-150)"/>
+  <use href="#leaf" transform="translate(292,160) rotate(-20) scale(.8)"/>
+  <use href="#leaf" transform="translate(340,222) rotate(-60) scale(.9)"/>
+  <use href="#leaf" transform="translate(240,180) rotate(160) scale(.75)"/>
+  <use href="#leaf" transform="translate(286,112) rotate(-190) scale(.7)"/>
+  <use href="#heart" transform="translate(232,86) scale(.9)"/>
+  <g fill="#E7C76A"><circle cx="214" cy="104" r="3"/><circle cx="350" cy="96" r="3"/><circle cx="404" cy="170" r="3"/><circle cx="160" cy="160" r="2.5"/><circle cx="246" cy="232" r="2.5"/></g>
+</svg>
