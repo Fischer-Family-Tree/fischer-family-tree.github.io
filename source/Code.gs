@@ -8,10 +8,11 @@ const SHEET = 'data';
 const PHOTO_FOLDER = 'Fischer Family Tree – obituary photos';
 const COLS = ['edits', 'inbox', 'obits', 'history'];
 
-function famKey_() { return PropertiesService.getScriptProperties().getProperty('FAMKEY'); }
+const FAMKEY = 'set in the live script';
+function famKey_() { return FAMKEY; }
 function out_(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
 function sheet_() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = SpreadsheetApp.openById('16Dr1LX5aexjIoxjFyincjGQATDnTusW67kn_uZMvdzU');
   let sh = ss.getSheetByName(SHEET);
   if (!sh) { sh = ss.insertSheet(SHEET); sh.appendRow(['collection', 'id', 'json', 'updated']); sh.setFrozenRows(1); }
   return sh;
@@ -62,5 +63,10 @@ function savePhoto_(dataUrl) {
   return { ok: true, url: 'https://drive.google.com/thumbnail?id=' + f.getId() + '&sz=w800' };
 }
 
-/** Run once from the editor after pasting the family key below, then delete the key from this line. */
-function setKey() { PropertiesService.getScriptProperties().setProperty('FAMKEY', 'PASTE_KEY_HERE'); sheet_(); }
+
+/** Run once: names the Sheet, adds the data tab, and asks Google for permission. */
+function setup() {
+  SpreadsheetApp.openById('16Dr1LX5aexjIoxjFyincjGQATDnTusW67kn_uZMvdzU').rename('Fischer Family Tree – website data');
+  sheet_();
+  const it = DriveApp.getFoldersByName(PHOTO_FOLDER); if (!it.hasNext()) DriveApp.createFolder(PHOTO_FOLDER);
+}
