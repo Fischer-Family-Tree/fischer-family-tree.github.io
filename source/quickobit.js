@@ -66,7 +66,7 @@ function shrinkPhoto(file){ return new Promise((res,rej)=>{ const img=new Image(
     c.getContext('2d').drawImage(img,0,0,c.width,c.height); URL.revokeObjectURL(url); res(c.toDataURL('image/jpeg',0.82)); };
   img.onerror=()=>{ toast('That file isn’t a picture this page can read.'); rej(); }; img.src=url; }); }
 // On the live site the photo is saved to the family’s Google Drive; in the preview it stays in the record.
-async function savePhoto(data){ if(!data) return ''; if(S.db && S.db.uploadPhoto) return S.db.uploadPhoto(data); return data; }
+async function savePhoto(data){ if(!data) return ''; if(!/^data:/.test(data)) return data; if(S.db && S.db.uploadPhoto) return S.db.uploadPhoto(data); return data; }
 document.addEventListener('click',async e=>{ const b=e.target.closest('[data-act="qcancel"],[data-act="qapprove"]'); if(!b||!QB) return;
   if(b.dataset.act==='qcancel'){ QB=null; renderQuick(); return; }
   const died=$('#qDied').value.trim(), src=$('#qSrc').value.trim(), {x,text}=QB, photoData=QB.photo||'';
